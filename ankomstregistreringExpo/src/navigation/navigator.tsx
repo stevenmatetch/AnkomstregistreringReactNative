@@ -4,14 +4,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useSelector } from "react-redux";
 import { selectIsLoggedIn } from "../redux/features/loggaIn/userAuthSlice";
 import LoggaInView from "../redux/features/loggaIn/loggaInView";
-import UppgifterView from "../redux/features/uppgifter/uppgifterView";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import UppgiftView from "../redux/features/uppgift/uppgiftView";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { selectAdmin } from "../redux/features/loggaIn/userAuthSlice";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
@@ -20,7 +14,6 @@ import { BokningView } from "../redux/features/bokning/bokningView";
 import BetalningView from "../redux/features/betalning/betalningView";
 import AdminView from "../redux/features/admin/adminView";
 
-
 const Stack = createStackNavigator();
 
 function HandleNavigation() {
@@ -28,9 +21,9 @@ function HandleNavigation() {
 
   type Nav = {
     navigate: (value: string) => void;
-  }
-  
-  const { navigate } = useNavigation<Nav>()
+  };
+
+  const { navigate } = useNavigation<Nav>();
 
   return (
     <View style={styles.gridView}>
@@ -38,7 +31,7 @@ function HandleNavigation() {
         <TouchableOpacity onPress={() => navigate("Bokningar")}>
           <Image
             style={styles.container}
-          source={require("../assets/images/calendar.png")}
+            source={require("../assets/images/calendar.png")}
           />
         </TouchableOpacity>
         <Text>Bokningar</Text>
@@ -47,7 +40,7 @@ function HandleNavigation() {
         <TouchableOpacity onPress={() => navigate("Betalningar")}>
           <Image
             style={styles.container}
-           source={require("../assets/images/wallet.png")}
+            source={require("../assets/images/wallet.png")}
           />
         </TouchableOpacity>
         <Text>Betalningar</Text>
@@ -56,7 +49,7 @@ function HandleNavigation() {
         <TouchableOpacity onPress={() => navigate("Uppgifter")}>
           <Image
             style={styles.container}
-           source={require("../assets/images/user.png")}
+            source={require("../assets/images/user.png")}
           />
         </TouchableOpacity>
         <Text>Uppgifter</Text>
@@ -77,15 +70,14 @@ function HandleNavigation() {
 const AppRoute = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const isAdmin = useSelector(selectAdmin);
-  console.log(isLoggedIn);
-  console.log(isAdmin);
+
   return (
     <NavigationContainer>
       <View style={styles.view}>
         {isLoggedIn == true && isAdmin == false && <HandleNavigation />}
-      </View>     
+      </View>
       {isLoggedIn ? (
-        isAdmin  == true ? (
+        isAdmin == true ? (
           <AdminView />
         ) : (
           <Stack.Navigator>
@@ -102,7 +94,7 @@ const AppRoute = () => {
             <Stack.Screen
               options={{ headerShown: false }}
               name="Uppgifter"
-              component={UppgifterView}
+              component={UppgiftView}
             />
           </Stack.Navigator>
         )

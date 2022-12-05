@@ -6,7 +6,8 @@ import { setSignOut } from "../loggaIn/userAuthSlice";
 
 export default function AdminView() 
 {
-  const dispatch = useDispatch();// let DeviceName = Device.deviceName;
+  const dispatch = useDispatch();
+  // let DeviceName = Device.deviceName;
       /*  <Text>Klinikens namn är: {DeviceName}</Text>*/
   return (
     <View style={styles.view}>

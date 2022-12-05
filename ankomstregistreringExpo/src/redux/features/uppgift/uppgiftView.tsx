@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   FlatList,
   Alert,
   TouchableOpacity,
@@ -11,32 +10,17 @@ import {
 
 import React, { useState, useEffect } from "react";
 import Dialog from "react-native-dialog";
-import Services from "../../../services/Services";
-import { FetchUppgifter } from "./uppgifterSlice";
+import { FetchUppgift } from "./uppgiftSlice";
 import { AppDispatch } from "../../store";
 import { useSelector, useDispatch } from "react-redux";
 import { selectPatPNr } from "../loggaIn/userAuthSlice";
-
-var APIServices = new Services();
-
-interface Uppgift {
-  Id: number;
-  Dsc: string;
-  cValue: string;
-}
-
-interface LoadedUppgift {
-  Id: number;
-  Dsc: string;
-  cValue: string;
-}
-
-let loadedData: LoadedUppgift[] = [];
+import { LoadedUppgift } from "../../../models/LoadedUppgift";
+import Uppgift from "../../../models/Uppgift";
 
 export default function UppgifterView() {
+  let loadedData: LoadedUppgift[] = [];
   const dispatch = useDispatch<AppDispatch>();
   const uppgift = useSelector((state: any) => state.uppgift);
-  const [data, SetMyData] = useState<LoadedUppgift[]>([]);
   const patPNr = useSelector(selectPatPNr);
   loadedData = uppgift.uppgifter;
   const [visible, setVisible] = useState(false);
@@ -90,16 +74,14 @@ export default function UppgifterView() {
     const myArray = await response.json();
     var x = myArray.response.AnkTt;
     const { "Ank-tt": myData } = x;
-    dispatch(FetchUppgifter(patPNr));
+    dispatch(FetchUppgift(patPNr));
     setVisible(false);
     return myData;
   }
 
   useEffect(() => {
-    dispatch(FetchUppgifter(patPNr));
+    dispatch(FetchUppgift(patPNr));
   }, []);
-
-
 
   function Swish() {
     //http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rct/SwishCl?cTxtRefP=""&cTxtRefP=""&cTxtMsgP=""&iPatPNrP=153&iEcoPNrP=1&deSumP=10
@@ -137,6 +119,7 @@ export default function UppgifterView() {
 
   return (
     <View style={styles.view}>
+      {/*
       <Dialog.Container visible={visible}>
         <Dialog.Title>Ändra</Dialog.Title>
         <Dialog.Input onChangeText={(newText) => setText(newText)}>
@@ -145,8 +128,8 @@ export default function UppgifterView() {
         <Dialog.Button label="Ändra" onPress={() => HandleEdit(newText)} />
         <Dialog.Button label="Stäng" onPress={() => HandleCancel()} />
       </Dialog.Container>
-      <Text style={styles.Title}>Kontrollera dina Uppgifter</Text>     
-     
+  */}
+      <Text style={styles.Title}>Kontrollera dina Uppgifter</Text>
       <FlatList
         data={loadedData}
         renderItem={RenderItem}
@@ -157,7 +140,6 @@ export default function UppgifterView() {
 }
 
 const styles = StyleSheet.create({
-  
   Bold1: {
     fontWeight: "bold",
     fontSize: 15,
@@ -166,7 +148,7 @@ const styles = StyleSheet.create({
   Title: {
     fontWeight: "bold",
     fontSize: 30,
-    marginBottom:30
+    marginBottom: 30,
   },
 
   Bold: {

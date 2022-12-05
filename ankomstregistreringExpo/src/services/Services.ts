@@ -1,11 +1,9 @@
 import * as Device from "expo-device";
 let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
-import moment from "moment";
-import "moment/locale/sv";
+
 
 export default class Services 
 { 
-  //?
   /*async GetBookings(PatPNr:number) 
   {
     const resp = await fetch(`http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/SchGetSchS?iPatPNrP=${PatPNr}&dDatSchStartP=2022-06-09 13:19:18&dDatSchEndP=2022-09-12 23:19:18`);
@@ -15,21 +13,6 @@ export default class Services
     return myData;
   }
   */
-
-  async BookingExistsToday(PatPNr:number) 
-  {
-    var from = new Date();
-    from.setMinutes(from.getMinutes() - 10);
-    let newFormatfrom = moment(from).format("L");
-    var to = new Date();
-    to.setHours(to.getHours() + 12);
-    let toNewFormat = moment(to).format("L");
-    const resp = await fetch(`http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/SchGetSchS?iPatPNrP=${PatPNr}&dDatSchStartP=${newFormatfrom}&dDatSchEndP=${toNewFormat}`);
-    const data = await resp.json();
-    var result = data.response.SchSTt;
-    const { "SchS-tt": myData } = result;
-    return myData;
-  }
 
   async GetImage2(cTabP:number, iNrP:number) 
   {

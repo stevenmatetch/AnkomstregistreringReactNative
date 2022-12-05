@@ -1,13 +1,5 @@
 import { createSlice ,PayloadAction} from "@reduxjs/toolkit"
-
-export interface UserAuth {
-    isLoggedIn: boolean,
-    userName: string,
-    userToken: string,
-    admin: boolean,
-    patPNr : number | null
-    sessionNrCode:number | null
-}
+import { UserAuth } from "../../../models/UserAuth";
 
 const initialState:UserAuth = {
     isLoggedIn: false,
@@ -28,7 +20,7 @@ const authSlice = createSlice({
             state.userName = action.payload.userName;
             state.admin = action.payload.admin;
             state.patPNr = action.payload.patPNr;
-            state.sessionNrCode = action.payload.sessionNrCode
+            state.sessionNrCode = action.payload.sessionNrCode;
         },
 
         setSignOut: (state) =>  {
@@ -36,7 +28,7 @@ const authSlice = createSlice({
             state.isLoggedIn = false;
             state.userToken = "";
             state.admin = false;
-            state.sessionNrCode = null
+            state.sessionNrCode = null;
         }
     }
 });

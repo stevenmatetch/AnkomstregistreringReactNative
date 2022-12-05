@@ -1,21 +1,15 @@
+import { LoadedUppgift } from '../../../models/LoadedUppgift';
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import { selectPatPNr } from '../loggaIn/userAuthSlice';
-import { useSelector } from "react-redux";
-import Uppgift from '../../../models/Uppgift';
+import  DataStateUppgift  from '../../../models/DataStateUppgift';
 
-export interface DataState {
-  loading: boolean,
-  uppgifter: null | Uppgift[],
-  error: string | null,
-}
 
-const initialState: DataState = {
+const initialState:DataStateUppgift  = {
   loading: false,
   uppgifter: [],
   error: null,
 };
 
-export const FetchUppgifter = createAsyncThunk('',async (patPNr: number) => {  
+export const FetchUppgift = createAsyncThunk('',async (patPNr: number) => {  
   const jsonData = {  
     request: {
       iPatPNrP: patPNr,
@@ -43,7 +37,7 @@ export const FetchUppgifter = createAsyncThunk('',async (patPNr: number) => {
     };
 
     const response = await fetch('http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/GetPatPParam', requestOptions);
-    const myArray = await response.json()
+    const myArray = await response.json();
     var x = myArray.response.AnkTt;
     const { "Ank-tt": myData } = x; 
     return myData;
@@ -55,14 +49,14 @@ const uppgifterSlice = createSlice({
   initialState,
   reducers:{},
   extraReducers: builder => {
-    builder.addCase(FetchUppgifter.pending, state => {
+    builder.addCase(FetchUppgift.pending, state => {
       state.loading = true;
     });
-    builder.addCase(FetchUppgifter.fulfilled, (state, action:PayloadAction<Uppgift[]>) => {
+    builder.addCase(FetchUppgift.fulfilled, (state, action:PayloadAction<LoadedUppgift[]>) => {
       state.loading = false;
       state.uppgifter = action.payload;
     });
-    builder.addCase(FetchUppgifter.rejected, (state, action:PayloadAction<any>) => {
+    builder.addCase(FetchUppgift.rejected, (state, action:PayloadAction<any>) => {
       state.loading = false;
       state.uppgifter = [];
       state.error = action.payload;

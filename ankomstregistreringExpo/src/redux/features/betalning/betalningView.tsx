@@ -13,24 +13,20 @@ import React, { useState, useEffect } from "react";
 import BetalPost from "../../../models/BetalPost";
 import Services from "../../../services/Services";
 //import * as SecureStore from "expo-secure-store";
-import { FetchBetalningar } from "./betalningSlice";
+import { FetchBetalning } from "./betalningSlice";
 import {AppDispatch} from '../../store';
 import { selectPatPNr } from "../loggaIn/userAuthSlice";
 import {useSelector, useDispatch} from 'react-redux';
 import { selectsessionNrCode } from "../loggaIn/userAuthSlice";
+import { LoadedBetalPost } from "../../../models/LoadedBetalPost";
 
 var APIServices = new Services();
 
-interface LoadedBetalPost {
-  EcoPNr:number;
-  SumJob:number;
-}
 
 let loadedData: LoadedBetalPost[] = [];
 
 export default function BetalningView() 
 {
-
     const dispatch = useDispatch<AppDispatch>();
     const betalning = useSelector((state: any) => state.betalning);
     const [data, SetMyData] = useState<BetalPost[]>([]);
@@ -39,7 +35,7 @@ export default function BetalningView()
     loadedData = betalning.betalningar;
     const betalposts: BetalPost[] = [];
 
-    async function Fetch_Betalningar() 
+    async function LoadedBetalPostToBetalPost() 
     {
       for (let i = 0; i < loadedData.length; i++) 
       {
@@ -52,7 +48,7 @@ export default function BetalningView()
     }
 
   useEffect(() => {
-  dispatch(FetchBetalningar({patPNr,sessionNrCode})).finally(() => Fetch_Betalningar());
+  dispatch(FetchBetalning({patPNr,sessionNrCode})).finally(() => LoadedBetalPostToBetalPost());
   }, []);
 
   const CreateAlert = () =>

@@ -18,32 +18,16 @@ import Bokning from "../../../models/Bokning";
 import { selectPatPNr } from "../loggaIn/userAuthSlice";
 import Services from "../../../services/Services";
 import { useSelector, useDispatch } from "react-redux";
-import { FetchBokningar } from "./bokningSlice";
+import { FetchBokning } from "./bokningSlice";
 import { AppDispatch } from "../../store";
 import { selectUserName } from "../loggaIn/userAuthSlice";
+import LoadedBokning  from '../../../models/LoadedBokning';
 
-interface LoadedBokning {
-  LateTxt: string;
-  SchSNr: number;
-  EmpPDsc: string;
-  SchPDsc: string;
-  DatTimeEnd: string;
-  WelcomeTxt: string;
-  ToLate: boolean;
-  LateText: string;
-  DatTimeStart: number;
-  Stat: number;
-  DatSch: number;
-  TimeStart: number;
-  TimeEnd: number;
-  TabYAATab: number;
-  TabYAANr: number;
-}
 
-let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
 let loadedData: LoadedBokning[] = [];
 
 export const BokningView = () => {
+  let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
   const patPNr = useSelector(selectPatPNr);
   const Username = useSelector(selectUserName);
   const [data, SetMyData] = useState<Bokning[]>([]);
@@ -55,7 +39,7 @@ export const BokningView = () => {
   loadedData = bokning.bokningar;
 
   useEffect(() => {
-    dispatch(FetchBokningar(patPNr)).finally(() => Fetch_Bokningar());
+    dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
   }, []);
 
   async function Arrive(iSchSNrP: number) {
@@ -65,11 +49,11 @@ export const BokningView = () => {
       Alert.alert(data.response.cResultP);
     }
 
-    dispatch(FetchBokningar(patPNr)).finally(() => Fetch_Bokningar());
+    dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
   }
 
 
-  async function Fetch_Bokningar() {
+  async function LoadedBokningToBokning() {
     if (loadedData.length > 0) {
       var from = new Date();
       let fromMin = moment(from).subtract(10, "minutes").toDate();
@@ -119,7 +103,7 @@ export const BokningView = () => {
         );
 
         bokningar.push(newBokning);
-       /* console.log("asdsssssssssss", settings.AutoRegister);
+       console.log("asdsssssssssss", settings.AutoRegister);
         if (bokningar[i].Stat == 10 && settings.AutoRegister) {
           // Ankomstregistrera denna!
           let res = await Arrive(bokningar[i].SchSNr);
@@ -131,7 +115,6 @@ export const BokningView = () => {
          
           }
         }
-*/
         if (toolate) {
           if (latetxt !== "") {
             latetxt = "Kontakta receptionen.";
@@ -294,7 +277,6 @@ export const BokningView = () => {
       {loadedData.length == 1 && (
         <Text style={styles.Title}>Dagens bokning</Text>
       )}
-
 
       <FlatList
         data={data}

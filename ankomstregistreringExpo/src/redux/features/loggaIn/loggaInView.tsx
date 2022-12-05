@@ -22,8 +22,6 @@ let currentLoginMethod = 0;
 let Username = "";
 let PatPNr = 0;
 var APIServices = new Services();
-let myAdmin = false;
-let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
 const settings = {} as Settings;
 const vardenheter: EcoP[] = [];
 
@@ -68,6 +66,7 @@ const GetSettings = async () => {
         break;
     }
     //Save("LoginMethod", newSettings.LoginMethod.toString());
+    //
     currentLoginMethod = settings.LoginMethod;
   }
 
@@ -87,8 +86,6 @@ export default function LoggaInView() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  //console.log(val);
-
   async function LoggInClicked(txtPersonNr: string, txtPIN: string) {
     //CheckPIN
     if (txtPersonNr.length == 13) {
@@ -103,8 +100,11 @@ export default function LoggaInView() {
       //{
       pwd = await APIServices.GetAdminPassword();
       if (txtPersonNr.toLowerCase() == "admin" && txtPIN == pwd) {
-        console.log("why");
-        myAdmin = true;
+        const user = {
+          isLoggedIn: true,
+          admin: true,
+        };
+        dispatch(setSignIn(user));
       } else {
         const resp = await fetch(
           `http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/CheckPinCode?cPatPIdP=${txtPersonNr}&cPinCodeP=${txtPIN}&cEcoPNrListP=${getEcoPList(
@@ -127,7 +127,7 @@ export default function LoggaInView() {
   }
 
   async function SetPatient(pNr: string) {
-    let success = false;
+    //let success = false;
     if (pNr.length == 10 || pNr.length == 11) pNr = "19" + pNr;
     if (pNr.length == 12) pNr = pNr.substring(0, 8) + "-" + pNr.substring(8);
     if (pNr.length == 13) {
@@ -166,8 +166,7 @@ export default function LoggaInView() {
   async function LoginHandle(txtPersonNr: string, txtPIN: string) {
     if (txtPersonNr !== "" && txtPIN !== "") {
       let lAvailableP = await LoggInClicked(txtPersonNr, txtPIN);
-      if (lAvailableP == true) 
-      {
+      if (lAvailableP == true) {
         let sessionNr: number = await APIServices.GetSessionNrCode();
         const user = {
           isLoggedIn: true,
@@ -177,16 +176,6 @@ export default function LoggaInView() {
           sessionNrCode: sessionNr,
         };
         dispatch(setSignIn(user));
-        LoggaInView();
-      }
-      if (myAdmin == true) {
-        console.log(3);
-        const user = {
-          isLoggedIn: true,
-          admin: true,
-        };
-        dispatch(setSignIn(user));
-        LoggaInView();
       }
     }
   }
