@@ -1,90 +1,81 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-} from "react-native";
-
+import { StyleSheet, View, Alert } from "react-native";
 import Settings from "../../../models/Settings";
 import EcoP from "../../../models/EcoP";
 import Services from "../../../services/Services";
 import CustomButton from "../../../CustomButton/CustomButton";
 import CustomInput from "../../../CustomInput/CustomInput";
 import { useDispatch } from "react-redux";
-import { selectUserName, setSignIn } from "./userAuthSlice";
-import { useSelector } from "react-redux";
-
-let currentLoginMethod = 0;
-let Username = "";
-let PatPNr = 0;
-var APIServices = new Services();
-const settings = {} as Settings;
-const vardenheter: EcoP[] = [];
-
-function getEcoPList(theseEcoP: EcoP[]) {
-  let retVal = "";
-  for (let i = 0; i < theseEcoP.length; i++) {
-    if (retVal != "") {
-      retVal += "%01";
-    }
-    retVal += theseEcoP[i].EcoPNr.toString();
-  }
-  return retVal;
-}
-
-const GetSettings = async () => {
-  var data = await APIServices.GetSettings();
-  let Typ = data.response.cLoginTypP;
-  var result = data.response.EcoPTt;
-  const { "EcoP-tt": myData } = result;
-
-  /////------------
-  if (data.response.iArrPNrP > 0) {
-    settings.ArrPNr = data.response.iArrPNrP;
-    settings.AutoRegister = data.response.lAutoRegP;
-    settings.UseMinusPNR = data.response.lPnrFormatP;
-    settings.SecretPNR = data.response.lPnrHiddenP;
-    settings.UseFpReader = data.response.lUseFingerP;
-    settings.cLoginTypP = data.response.cLoginTypP;
-
-    switch (Typ) {
-      case "PNR":
-        settings.LoginMethod = 2;
-        break;
-      case "PNRFP":
-        settings.LoginMethod = 1;
-        break;
-      case "PIN":
-        settings.LoginMethod = 0;
-        break;
-      default:
-        settings.LoginMethod = 0;
-        break;
-    }
-    //Save("LoginMethod", newSettings.LoginMethod.toString());
-    //
-    currentLoginMethod = settings.LoginMethod;
-  }
-
-  for (let i = 0; i < myData.length; i++) {
-    const newEcoP = {} as EcoP;
-    newEcoP.EcoPNr = myData[i].EcoPNr;
-    newEcoP.EcoPId = myData[i].EcoPId;
-    newEcoP.Dsc = myData[i].Dsc;
-    vardenheter.push(newEcoP);
-  }
-};
+import { setSignIn } from "./userAuthSlice";
 
 export default function LoggaInView() {
-  const user = useSelector(selectUserName);
-  // const [CurrentLoginMethod, setLoginMethod] = useState(0);
+  //const user = useSelector(selectUserName);
+  let Username = "";
+  let PatPNr = 0;
+  var APIServices = new Services();
+  const settings = {} as Settings;
+  const vardenheter: EcoP[] = [];
+  const [currentLoginMethod, setLoginMethod] = useState(0);
+  const [secretPNR, setSecretPNRMethod] = useState(false);
+  const [AutoRegister, setAutoRegisterMethod] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+
+  function getEcoPList(theseEcoP: EcoP[]) {
+    let retVal = "";
+    for (let i = 0; i < theseEcoP.length; i++) {
+      if (retVal != "") {
+        retVal += "%01";
+      }
+      retVal += theseEcoP[i].EcoPNr.toString();
+    }
+    return retVal;
+  }
+
+  const GetSettings = async () => {
+    var data = await APIServices.GetSettings();
+    let Typ = data.response.cLoginTypP;
+    var result = data.response.EcoPTt;
+    const { "EcoP-tt": myData } = result;
+   //sdasd
+    if (data.response.iArrPNrP > 0) {
+      settings.ArrPNr = data.response.iArrPNrP;
+      settings.AutoRegister = data.response.lAutoRegP;
+      settings.UseMinusPNR = data.response.lPnrFormatP;
+      settings.SecretPNR = data.response.lPnrHiddenP;
+      settings.UseFpReader = data.response.lUseFingerP;
+      settings.cLoginTypP = data.response.cLoginTypP;
+
+      switch (Typ) {
+        case "PNR":
+          settings.LoginMethod = 2;
+          break;
+        case "PNRFP":
+          settings.LoginMethod = 1;
+          break;
+        case "PIN":
+          settings.LoginMethod = 0;
+          break;
+        default:
+          settings.LoginMethod = 0;
+          break;
+      }
+
+      setLoginMethod(settings.LoginMethod);
+      setSecretPNRMethod(settings.SecretPNR);
+      setAutoRegisterMethod(settings.AutoRegister);
+ 
+    }
+
+    for (let i = 0; i < myData.length; i++) {
+      const newEcoP = {} as EcoP;
+      newEcoP.EcoPNr = myData[i].EcoPNr;
+      newEcoP.EcoPId = myData[i].EcoPId;
+      newEcoP.Dsc = myData[i].Dsc;
+      vardenheter.push(newEcoP);
+    }
+  };
 
   async function LoggInClicked(txtPersonNr: string, txtPIN: string) {
     //CheckPIN
@@ -127,15 +118,24 @@ export default function LoggaInView() {
   }
 
   async function SetPatient(pNr: string) {
-    //let success = false;
+    //testa
+
     if (pNr.length == 10 || pNr.length == 11) pNr = "19" + pNr;
     if (pNr.length == 12) pNr = pNr.substring(0, 8) + "-" + pNr.substring(8);
     if (pNr.length == 13) {
-      let PNR = pNr.substring(2);
-      PNR = PNR.replace("-", "");
+
+      pNr = pNr.substring(2);   
+      pNr = pNr.replace("-", "");
+      /*
+      if (settings.UseMinusPNR !== true) 
+      {
+        console.log("dontuseMinus")
+        pNr = pNr.replace("-", "");
+      }
+      */
 
       //Findfirst???
-      const url = `http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/gen/FindFirst?cTableP=PatP&cWhereStrP=PatPId="${PNR}" AND Century=19&cDataStrP=Dsc%01PatPNr%01EcoPN`;
+      const url = `http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/gen/FindFirst?cTableP=PatP&cWhereStrP=PatPId="${pNr}" AND Century=19&cDataStrP=Dsc%01PatPNr%01EcoPN`;
       const resp = await fetch(url);
       let data = await resp.json();
 
@@ -164,18 +164,39 @@ export default function LoggaInView() {
   }
 
   async function LoginHandle(txtPersonNr: string, txtPIN: string) {
-    if (txtPersonNr !== "" && txtPIN !== "") {
-      let lAvailableP = await LoggInClicked(txtPersonNr, txtPIN);
-      if (lAvailableP == true) {
-        let sessionNr: number = await APIServices.GetSessionNrCode();
-        const user = {
-          isLoggedIn: true,
-          userName: Username,
-          admin: false,
-          patPNr: PatPNr,
-          sessionNrCode: sessionNr,
-        };
-        dispatch(setSignIn(user));
+    if (currentLoginMethod == 2) {
+      if (txtPersonNr !== "") {
+        let lAvailableP = await SetPatient(txtPersonNr);
+
+        if (lAvailableP == true) {
+          let sessionNr: number = await APIServices.GetSessionNrCode();
+          const user = {
+            isLoggedIn: true,
+            userName: Username,
+            admin: false,
+            patPNr: PatPNr,
+            sessionNrCode: sessionNr,
+            autoRegister: AutoRegister,
+          }
+          console.log("aaa",AutoRegister)
+          dispatch(setSignIn(user));
+        }
+      }
+    } else {
+      if (txtPersonNr !== "" && txtPIN !== "") {
+        let lAvailableP = await LoggInClicked(txtPersonNr, txtPIN);
+        if (lAvailableP == true) {
+          let sessionNr: number = await APIServices.GetSessionNrCode();
+          const user = {
+            isLoggedIn: true,
+            userName: Username,
+            admin: false,
+            patPNr: PatPNr,
+            sessionNrCode: sessionNr,
+            autoRegister: AutoRegister,
+          }
+          dispatch(setSignIn(user));
+        }
       }
     }
   }
@@ -185,45 +206,93 @@ export default function LoggaInView() {
   }, []);
 
   if (currentLoginMethod == 2) {
-    return (
-      <View style={styles.container}>
-        <View>
-          <CustomInput
-            placeholder="Personnummer"
-            value={username}
-            setValue={setUsername}
-            secureTextEntry={false}
-          />
-          <CustomButton
-            text="Logga in"
-            onPress={() => LoginHandle(username, password)}
-          />
+    if(secretPNR == false){
+      return (
+        <View style={styles.container}>
+          <View>
+            <CustomInput
+              placeholder="ÅÅÅÅMMDD-XXXX"
+              value={username}
+              setValue={setUsername}
+              secureTextEntry={false}
+            />
+            <CustomButton
+              text="Logga in"
+              onPress={() => LoginHandle(username, password)}
+            />
+          </View>
         </View>
-      </View>
-    );
+      );
+    }
+    else{
+      return (
+        <View style={styles.container}>
+          <View>
+            <CustomInput
+              placeholder="ÅÅÅÅMMDD-XXXX"
+              value={username}
+              setValue={setUsername}
+              secureTextEntry={true}
+            />
+            <CustomButton
+              text="Logga in"
+              onPress={() => LoginHandle(username, password)}
+            />
+          </View>
+        </View>
+      );
+    }
+  
   } else {
-    return (
-      <View style={styles.container}>
-        <View>
-          <CustomInput
-            placeholder="Personnummer"
-            value={username}
-            setValue={setUsername}
-            secureTextEntry={false}
-          />
-          <CustomInput
-            placeholder="Pinkod"
-            value={password}
-            setValue={setPassword}
-            secureTextEntry={true}
-          />
-          <CustomButton
-            text="Logga in"
-            onPress={() => LoginHandle(username, password)}
-          />
+    if(secretPNR == false){
+      return (
+        <View style={styles.container}>
+          <View>
+            <CustomInput
+              placeholder="ÅÅÅÅMMDD-XXXX"
+              value={username}
+              setValue={setUsername}
+              secureTextEntry={false}
+            />
+            <CustomInput
+              placeholder="Pinkod"
+              value={password}
+              setValue={setPassword}
+              secureTextEntry={true}
+            />
+            <CustomButton
+              text="Logga in"
+              onPress={() => LoginHandle(username, password)}
+            />
+          </View>
         </View>
-      </View>
-    );
+      );
+    }
+    else{
+      return (
+        <View style={styles.container}>
+          <View>
+            <CustomInput
+              placeholder="ÅÅÅÅMMDD-XXXX"
+              value={username}
+              setValue={setUsername}
+              secureTextEntry={true}
+            />
+            <CustomInput
+              placeholder="Pinkod"
+              value={password}
+              setValue={setPassword}
+              secureTextEntry={true}
+            />
+            <CustomButton
+              text="Logga in"
+              onPress={() => LoginHandle(username, password)}
+            />
+          </View>
+        </View>
+      );
+    }
+    
   }
 }
 

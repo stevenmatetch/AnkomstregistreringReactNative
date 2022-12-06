@@ -4,16 +4,6 @@ let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
 
 export default class Services 
 { 
-  /*async GetBookings(PatPNr:number) 
-  {
-    const resp = await fetch(`http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/SchGetSchS?iPatPNrP=${PatPNr}&dDatSchStartP=2022-06-09 13:19:18&dDatSchEndP=2022-09-12 23:19:18`);
-    const data = await resp.json();
-    var result = data.response.SchSTt;
-    const { "SchS-tt": myData } = result;
-    return myData;
-  }
-  */
-
   async GetImage2(cTabP:number, iNrP:number) 
   {
     const resp = await fetch(baseURL + `sch/GetImage2?cParamP=AnkImage&cTabP=${cTabP}&iNrP=${iNrP}`);
@@ -33,10 +23,9 @@ export default class Services
   async GetSettings() 
   {
     let deviceName = Device.deviceName;
-    let name = "Galaxy Tab S2";
-    const resp = await fetch(baseURL + `arr/GetArrP?cComputerIdP=${name}`);
+    const resp = await fetch(baseURL + `arr/GetArrP?cComputerIdP=${deviceName}`);
     const data = await resp.json();
-    return data;
+    return data;  
   }
 
   async  GetSessionNrCode() {

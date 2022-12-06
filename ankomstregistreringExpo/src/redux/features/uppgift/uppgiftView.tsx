@@ -6,6 +6,7 @@ import {
   Alert,
   TouchableOpacity,
   Image,
+  ActivityIndicator
 } from "react-native";
 
 import React, { useState, useEffect } from "react";
@@ -129,7 +130,17 @@ export default function UppgifterView() {
         <Dialog.Button label="Stäng" onPress={() => HandleCancel()} />
       </Dialog.Container>
   */}
+
+
       <Text style={styles.Title}>Kontrollera dina Uppgifter</Text>
+
+      {uppgift.loading &&
+      (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large"></ActivityIndicator>
+        </View>
+      )}
+
       <FlatList
         data={loadedData}
         renderItem={RenderItem}

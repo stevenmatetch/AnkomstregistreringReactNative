@@ -1,5 +1,5 @@
 
 export default interface BetalPost{
-  name:string,
-  sum:number
+  name:string;
+  sum:number;
 }

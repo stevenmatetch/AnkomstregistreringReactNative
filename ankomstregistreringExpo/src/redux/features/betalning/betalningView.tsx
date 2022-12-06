@@ -2,17 +2,15 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   FlatList,
   Alert,
   TouchableOpacity,
-  Image,
+  ActivityIndicator
 } from "react-native";
 
 import React, { useState, useEffect } from "react";
 import BetalPost from "../../../models/BetalPost";
 import Services from "../../../services/Services";
-//import * as SecureStore from "expo-secure-store";
 import { FetchBetalning } from "./betalningSlice";
 import {AppDispatch} from '../../store';
 import { selectPatPNr } from "../loggaIn/userAuthSlice";
@@ -20,13 +18,12 @@ import {useSelector, useDispatch} from 'react-redux';
 import { selectsessionNrCode } from "../loggaIn/userAuthSlice";
 import { LoadedBetalPost } from "../../../models/LoadedBetalPost";
 
-var APIServices = new Services();
-
 
 let loadedData: LoadedBetalPost[] = [];
 
 export default function BetalningView() 
 {
+    var APIServices = new Services();
     const dispatch = useDispatch<AppDispatch>();
     const betalning = useSelector((state: any) => state.betalning);
     const [data, SetMyData] = useState<BetalPost[]>([]);
@@ -106,6 +103,13 @@ export default function BetalningView()
   return (
     <View style={styles.view}>
       <Text style={styles.Title}>Att betala</Text>
+
+      {betalning.loading &&
+      (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large"></ActivityIndicator>
+        </View>
+      )}
      
       <FlatList
         data={data}

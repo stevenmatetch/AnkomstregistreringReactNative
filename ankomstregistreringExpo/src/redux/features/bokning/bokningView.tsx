@@ -14,6 +14,7 @@ import {
 import Settings from "../../../models/Settings";
 import moment from "moment";
 import "moment/locale/sv";
+import { selectAutoRegister } from "../loggaIn/userAuthSlice";
 import Bokning from "../../../models/Bokning";
 import { selectPatPNr } from "../loggaIn/userAuthSlice";
 import Services from "../../../services/Services";
@@ -24,9 +25,12 @@ import { selectUserName } from "../loggaIn/userAuthSlice";
 import LoadedBokning  from '../../../models/LoadedBokning';
 
 
+
 let loadedData: LoadedBokning[] = [];
 
 export const BokningView = () => {
+  const settings_AutoRegister = useSelector(selectAutoRegister);
+ 
   let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
   const patPNr = useSelector(selectPatPNr);
   const Username = useSelector(selectUserName);
@@ -43,13 +47,20 @@ export const BokningView = () => {
   }, []);
 
   async function Arrive(iSchSNrP: number) {
+    console.log(1);
     let resp = await fetch(baseURL + `sch/Arrive?iSchSNrP=${iSchSNrP}`);
     const data = await resp.json();
+    console.log(2);
     if (data.response.cResultP !== "") {
       Alert.alert(data.response.cResultP);
+      dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
+      return "nej"
     }
+    else{
+      dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
+      return "ja"
 
-    dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
+    } 
   }
 
 
@@ -62,7 +73,7 @@ export const BokningView = () => {
 
       for (let i = 0; i < loadedData.length; i++) {
         const newBokning = {} as Bokning;
-        const settings = {} as Settings;
+        
 
         //stöd för försenad
         let startTid = GetDatTimeStartDate(
@@ -74,11 +85,11 @@ export const BokningView = () => {
           newBokning.ToLate = true;
         }
 
-        newBokning.ImageFile = await APIServices.GetImage2(
+     /*   newBokning.ImageFile = await APIServices.GetImage2(
           loadedData[i].TabYAATab,
           loadedData[i].TabYAANr
         );
-
+*/
         if (newBokning.ToLate && loadedData[i].Stat == 10) {
           toolate = true;
           latetxt = loadedData[i].LateTxt;
@@ -103,18 +114,26 @@ export const BokningView = () => {
         );
 
         bokningar.push(newBokning);
-       console.log("asdsssssssssss", settings.AutoRegister);
-        if (bokningar[i].Stat == 10 && settings.AutoRegister) {
+       console.log(bokningar)
+       console.log("asdsssssssssss", settings_AutoRegister);
+        if (loadedData[i].Stat == 10 && settings_AutoRegister) {
+          console.log("yes")
           // Ankomstregistrera denna!
           let res = await Arrive(bokningar[i].SchSNr);
-          if (res != null && res !== "") {
-          } else {
-            bokningar[i].Stat = 20;
+          console.log("res",res);
+          if (res !== null && res !== "") {
+          console.log("tom");
+          }
+          if(res == "ja")
+          {
+            console.log("autoreg")
+            loadedData[i].Stat = 20;
             // newBlock.Ankommen = true;
             // newBlock.SetSelect(true);
          
           }
         }
+        
         if (toolate) {
           if (latetxt !== "") {
             latetxt = "Kontakta receptionen.";
@@ -269,13 +288,20 @@ export const BokningView = () => {
     }
   };
 
+
+
   return (
     <View style={styles.view}>
-      {loadedData.length > 1 && (
+      {data.length > 1 && (
         <Text style={styles.Title}>Dagens bokningar</Text>
       )}
-      {loadedData.length == 1 && (
-        <Text style={styles.Title}>Dagens bokning</Text>
+      {data.length == 1 && ( <Text style={styles.Title}>Dagens bokning</Text>)}
+
+      {bokning.loading &&
+      (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large"></ActivityIndicator>
+        </View>
       )}
 
       <FlatList

@@ -1,5 +1,4 @@
 import {createSlice,createAsyncThunk,PayloadAction} from '@reduxjs/toolkit';
-import Bokning from '../../../models/Bokning';
 import moment from 'moment';
 import "moment/locale/sv";
 import { DataStateBokning } from '../../../models/DataStateBoking';
@@ -15,6 +14,7 @@ export const FetchBokning = createAsyncThunk("",async (PatPNr:number) => {
   var from = new Date();
   from.setMinutes(from.getMinutes() - 10);
   const fromNewFormat = moment(from).format("L");
+  console.log(from);
   var to = new Date();
   to.setHours(to.getHours() + 12);
   const toNewFormat = moment(to).format("L");

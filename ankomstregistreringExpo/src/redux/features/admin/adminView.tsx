@@ -1,21 +1,19 @@
-import { StyleSheet, Text, View,TouchableOpacity,Image } from "react-native";
-import React, { useState, useEffect } from "react";
-import CustomButton from "../../../CustomButton/CustomButton";
+import { StyleSheet, Text, View,TouchableOpacity} from "react-native";
 import { useDispatch } from "react-redux";
 import { setSignOut } from "../loggaIn/userAuthSlice";
+import * as Device from "expo-device";
 
 export default function AdminView() 
 {
   const dispatch = useDispatch();
-  // let DeviceName = Device.deviceName;
-      /*  <Text>Klinikens namn är: {DeviceName}</Text>*/
+  let DeviceName = Device.deviceName;
+  
+
   return (
     <View style={styles.view}>
-      <View >
-        <View>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.Bold1}>Välj skrivare</Text>
-          </TouchableOpacity>
+      <View style={styles.view} >
+        <View >
+        <Text>Klinikens namn är: {DeviceName}</Text>
         </View>
         <View>
           <TouchableOpacity style={styles.button}>

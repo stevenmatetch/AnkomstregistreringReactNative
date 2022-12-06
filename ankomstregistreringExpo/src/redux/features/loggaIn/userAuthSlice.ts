@@ -7,7 +7,8 @@ const initialState:UserAuth = {
     userToken: "",
     admin: false,
     patPNr : null,
-    sessionNrCode: null
+    sessionNrCode: null,
+    autoRegister: false
 }
 
 const authSlice = createSlice({
@@ -21,6 +22,7 @@ const authSlice = createSlice({
             state.admin = action.payload.admin;
             state.patPNr = action.payload.patPNr;
             state.sessionNrCode = action.payload.sessionNrCode;
+            state.autoRegister = action.payload.autoRegister;
         },
 
         setSignOut: (state) =>  {
@@ -29,11 +31,13 @@ const authSlice = createSlice({
             state.userToken = "";
             state.admin = false;
             state.sessionNrCode = null;
+            state.autoRegister = false;
         }
     }
 });
 
 export const { setSignIn, setSignOut } = authSlice.actions;
+export const selectAutoRegister = (state:any) => state.userAuth.autoRegister;
 export const selectIsLoggedIn = (state:any) => state.userAuth.isLoggedIn;
 export const selectUserName = (state:any) => state.userAuth.userName;
 export const selectAdmin = (state:any) => state.userAuth.admin;

@@ -1,23 +1,27 @@
 export default class Settings {
+  
+   ArrPNr:number=  0;
+
   // Inställningar
   LoginMethod: number;
-  UseFpReader: string;
-  StartBPTIXml: string;
-  AutoRegister: string;
-  SecretPNR: number;
-  ArrPNr: string;
-  cLoginTypP: string;
+  UseFpReader: boolean;
+  StartBPTIXml: boolean;
+  AutoRegister: boolean;
+  SecretPNR: boolean;
+  cLoginTypP: boolean;
   
-  constructor(LoginMethod: number, UseFpReader: string,  StartBPTIXml: string, AutoRegister: string, SecretPNR: number,ArrPNr: string ,cLoginTypP: string) 
+  constructor(LoginMethod: number, UseFpReader: boolean,  StartBPTIXml: boolean, AutoRegister: boolean, SecretPNR: boolean,cLoginTypP: boolean) 
   {
     this.LoginMethod = LoginMethod;
     this.UseFpReader = UseFpReader;
     this.StartBPTIXml= StartBPTIXml;
     this.AutoRegister= AutoRegister;
     this.SecretPNR= SecretPNR;
-    this.ArrPNr= ArrPNr;
-    this.cLoginTypP=cLoginTypP
+   
+    this.cLoginTypP=cLoginTypP;
 }
+
+  UseMinusPNR:boolean = true;
 
   // Skrivare
   printAnkomstKvitto: boolean = true;
@@ -28,7 +32,7 @@ export default class Settings {
   mpxRight: number = 15;
   mpxTop: number = 0;
   mpxBottom: number = 0;
-  UseMinusPNR: boolean = true;
+  
 
   // Avstängd
   AnkTermDiabled: boolean = false;

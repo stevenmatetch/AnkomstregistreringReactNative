@@ -10,7 +10,6 @@ const initialState:DataStateBetalPost = {
 
 let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
 
-
 export const FetchBetalning = createAsyncThunk("",async ({ patPNr, sessionNrCode }: { patPNr: number, sessionNrCode: number }) => {
   const resp = await fetch(baseURL +`pat/PatPayNewExternal?lInitP=true&iPatPNrP=${patPNr}&iEcoPNrP=0&deRecivedP=0&cTxtCepaP=${""}&iSessionNrP=${sessionNrCode}`);
   const data = await resp.json();
