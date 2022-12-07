@@ -2,7 +2,6 @@ import { LoadedUppgift } from '../../../models/LoadedUppgift';
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import  DataStateUppgift  from '../../../models/DataStateUppgift';
 
-
 const initialState:DataStateUppgift  = {
   loading: false,
   uppgifter: [],
@@ -44,7 +43,7 @@ export const FetchUppgift = createAsyncThunk('',async (patPNr: number) => {
 });
 
 
-const uppgifterSlice = createSlice({
+const uppgiftSlice = createSlice({
   name: 'uppgift',
   initialState,
   reducers:{},
@@ -64,4 +63,4 @@ const uppgifterSlice = createSlice({
   },
 });
 
-export default uppgifterSlice.reducer;
+export default uppgiftSlice.reducer;

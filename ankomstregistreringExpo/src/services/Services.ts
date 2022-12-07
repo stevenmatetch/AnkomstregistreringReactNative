@@ -1,7 +1,6 @@
 import * as Device from "expo-device";
 let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
 
-
 export default class Services 
 { 
   async GetImage2(cTabP:number, iNrP:number) 

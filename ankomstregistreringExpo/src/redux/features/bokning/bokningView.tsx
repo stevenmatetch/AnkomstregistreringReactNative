@@ -30,7 +30,6 @@ let loadedData: LoadedBokning[] = [];
 
 export const BokningView = () => {
   const settings_AutoRegister = useSelector(selectAutoRegister);
- 
   let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
   const patPNr = useSelector(selectPatPNr);
   const Username = useSelector(selectUserName);
@@ -85,11 +84,11 @@ export const BokningView = () => {
           newBokning.ToLate = true;
         }
 
-     /*   newBokning.ImageFile = await APIServices.GetImage2(
+        newBokning.ImageFile = await APIServices.GetImage2(
           loadedData[i].TabYAATab,
           loadedData[i].TabYAANr
         );
-*/
+
         if (newBokning.ToLate && loadedData[i].Stat == 10) {
           toolate = true;
           latetxt = loadedData[i].LateTxt;
