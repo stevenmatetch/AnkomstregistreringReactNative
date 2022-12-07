@@ -10,6 +10,7 @@ import { setSignIn } from "./userAuthSlice";
 
 export default function LoggaInView() {
   //const user = useSelector(selectUserName);
+  //testa med en annan patient
   let Username = "";
   let PatPNr = 0;
   var APIServices = new Services();
