@@ -5,6 +5,5 @@ export interface UserAuth {
     admin: boolean;
     patPNr : number | null;
     sessionNrCode:number | null;
-     autoRegister: boolean;
-
+    autoRegister: boolean;
 }

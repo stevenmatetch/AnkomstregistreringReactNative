@@ -1,5 +1,5 @@
 export interface LoadedUppgift {
-    Id: number;
+    Id: string;
     Dsc: string;
     cValue: string;
   }

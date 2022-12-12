@@ -8,7 +8,6 @@ export default function AdminView()
   const dispatch = useDispatch();
   let DeviceName = Device.deviceName;
   
-
   return (
     <View style={styles.view}>
       <View style={styles.view} >
@@ -41,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "aliceblue",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
   button: {
@@ -50,13 +49,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     width: 190,
-    margin: 10,
+    margin: 10
   }, 
 
    Bold1: {
     fontWeight: "bold",
     fontSize: 15,
-    color: "white",
+    color: "white"
   }
 
 });

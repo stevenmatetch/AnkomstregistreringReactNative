@@ -16,8 +16,7 @@ export default class Settings {
     this.UseFpReader = UseFpReader;
     this.StartBPTIXml= StartBPTIXml;
     this.AutoRegister= AutoRegister;
-    this.SecretPNR= SecretPNR;
-   
+    this.SecretPNR= SecretPNR;  
     this.cLoginTypP=cLoginTypP;
 }
 

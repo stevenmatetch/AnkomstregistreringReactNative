@@ -83,17 +83,17 @@ const AppRoute = () => {
           <Stack.Navigator>
             <Stack.Screen
               options={{ headerShown: false }}
-              name="Bokningar"
+              name="Bokning"
               component={BokningView}
             />
             <Stack.Screen
               options={{ headerShown: false }}
-              name="Betalningar"
+              name="Betalning"
               component={BetalningView}
             />
             <Stack.Screen
               options={{ headerShown: false }}
-              name="Uppgifter"
+              name="Uppgift"
               component={UppgiftView}
             />
           </Stack.Navigator>
@@ -103,7 +103,7 @@ const AppRoute = () => {
       )}
     </NavigationContainer>
   );
-};
+}
 
 export default AppRoute;
 

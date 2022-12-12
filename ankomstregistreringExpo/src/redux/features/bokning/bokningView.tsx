@@ -7,11 +7,10 @@ import {
   SafeAreaView,
   ActivityIndicator,
   TouchableOpacity,
-  Button,
   Image,
   Alert,
 } from "react-native";
-import Settings from "../../../models/Settings";
+
 import moment from "moment";
 import "moment/locale/sv";
 import { selectAutoRegister } from "../loggaIn/userAuthSlice";
@@ -24,8 +23,6 @@ import { AppDispatch } from "../../store";
 import { selectUserName } from "../loggaIn/userAuthSlice";
 import LoadedBokning  from '../../../models/LoadedBokning';
 
-
-
 let loadedData: LoadedBokning[] = [];
 
 export const BokningView = () => {
@@ -37,7 +34,7 @@ export const BokningView = () => {
   //obj (slice)
   const bokning = useSelector((state: any) => state.bokning);
   const dispatch = useDispatch<AppDispatch>();
-  var APIServices = new Services();
+  const APIServices = new Services();
   const bokningar: Bokning[] = [];
   loadedData = bokning.bokningar;
 
@@ -53,19 +50,17 @@ export const BokningView = () => {
     if (data.response.cResultP !== "") {
       Alert.alert(data.response.cResultP);
       dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
-      return "nej"
+      return "nej";
     }
     else{
       dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
-      return "ja"
-
+      return "ja";
     } 
   }
 
-
   async function LoadedBokningToBokning() {
     if (loadedData.length > 0) {
-      var from = new Date();
+      let from:Date = new Date();
       let fromMin = moment(from).subtract(10, "minutes").toDate();
       let latetxt = "";
       let toolate = false;
@@ -73,7 +68,6 @@ export const BokningView = () => {
       for (let i = 0; i < loadedData.length; i++) {
         const newBokning = {} as Bokning;
         
-
         //stöd för försenad
         let startTid = GetDatTimeStartDate(
           loadedData[i].DatSch,
@@ -87,7 +81,7 @@ export const BokningView = () => {
         newBokning.ImageFile = await APIServices.GetImage2(
           loadedData[i].TabYAATab,
           loadedData[i].TabYAANr
-        );
+        )
 
         if (newBokning.ToLate && loadedData[i].Stat == 10) {
           toolate = true;
@@ -111,16 +105,33 @@ export const BokningView = () => {
           loadedData[i].DatSch,
           loadedData[i].TimeEnd
         );
+         
+        console.log();
+        //sen
+        if(startTid < fromMin)
+        {  
+            bokningar.push(newBokning);               
+        }
 
-        bokningar.push(newBokning);
-       console.log(bokningar)
-       console.log("asdsssssssssss", settings_AutoRegister);
-        if (loadedData[i].Stat == 10 && settings_AutoRegister) {
+        // i tid
+        if(startTid > fromMin)
+        {
+          bokningar.push(newBokning);  
+          if(startTid < fromMin){
+
+          }
+           
+        }
+
+        console.log("asdsssssssssss", settings_AutoRegister);
+        if (loadedData[i].Stat == 10 && settings_AutoRegister) 
+        {
           console.log("yes")
           // Ankomstregistrera denna!
           let res = await Arrive(bokningar[i].SchSNr);
           console.log("res",res);
-          if (res !== null && res !== "") {
+          if (res !== null && res !== "") 
+          {
           console.log("tom");
           }
           if(res == "ja")
@@ -128,15 +139,21 @@ export const BokningView = () => {
             console.log("autoreg")
             loadedData[i].Stat = 20;
             // newBlock.Ankommen = true;
-            // newBlock.SetSelect(true);
-         
+            // newBlock.SetSelect(true);        
           }
         }
         
-        if (toolate) {
-          if (latetxt !== "") {
+        if (toolate) 
+        {
+          if (latetxt !== "") 
+          {
             latetxt = "Kontakta receptionen.";
             Alert.alert("Tiden för en bokning har passerats.\n" + latetxt);
+          }
+
+          if(latetxt == "")
+          {
+            Alert.alert("Tiden för en bokning har passerats.");
           }
         }
       }
@@ -144,6 +161,10 @@ export const BokningView = () => {
     SetMyData(bokningar);
   }
 
+  function GetHalvBookingTime(){
+
+  }
+  
   function GetDatTimeStartDate(value: number, min: number) {
     let date: Date = new Date(value);
     date.setMinutes(min);
@@ -285,9 +306,7 @@ export const BokningView = () => {
         );
       }
     }
-  };
-
-
+  }
 
   return (
     <View style={styles.view}>
@@ -310,26 +329,26 @@ export const BokningView = () => {
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   flex1: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
 
   Title: {
     fontWeight: "bold",
     fontSize: 30,
-    marginBottom: 30,
+    marginBottom: 30
   },
 
   button: {
     alignItems: "center",
     backgroundColor: "#3498db",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 5
   },
 
   item: {
@@ -337,30 +356,30 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
-    width: 500,
+    width: 500
   },
 
   view: {
     flex: 1,
     backgroundColor: "aliceblue",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
   container: {
     height: 70,
-    width: 70,
+    width: 70
   },
 
   Img: {
     height: 30,
-    width: 30,
+    width: 30
   },
 
   gridView: {
     margin: 20,
     marginTop: 10,
-    flexDirection: "row",
+    flexDirection: "row"
   },
 
   itemContainer: {
@@ -369,22 +388,22 @@ const styles = StyleSheet.create({
     padding: 40,
     height: 150,
     width: 158,
-    margin: 5,
+    margin: 5
   },
 
   font: {
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 15
   },
 
   Bold: {
     fontWeight: "bold",
     fontSize: 15,
-    color: "white",
+    color: "white"
   },
 
   Bold1: {
     fontWeight: "bold",
-    fontSize: 15,
-  },
+    fontSize: 15
+  }
 });

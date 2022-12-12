@@ -6,16 +6,14 @@ import LoadedBokning from '../../../models/LoadedBokning';
 
 const initialState: DataStateBokning = {
   loading: false,
-  bokningar: [],
-  error: null,
-};
+  bokningar: []
+}
 
 export const FetchBokning = createAsyncThunk("",async (PatPNr:number) => {
-  var from = new Date();
+  let from:Date = new Date();
   from.setMinutes(from.getMinutes() - 10);
   const fromNewFormat = moment(from).format("L");
-  console.log(from);
-  var to = new Date();
+  let to:Date = new Date();
   to.setHours(to.getHours() + 12);
   const toNewFormat = moment(to).format("L");
   const resp = await fetch(`http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/SchGetSchS?iPatPNrP=${PatPNr}&dDatSchStartP=${fromNewFormat}&dDatSchEndP=${toNewFormat}`);
@@ -23,7 +21,7 @@ export const FetchBokning = createAsyncThunk("",async (PatPNr:number) => {
   var result = data.response.SchSTt;
   const { "SchS-tt": myData } = result;
   return myData;
-});
+})
 
 
 const bokningSlice = createSlice({
@@ -33,18 +31,16 @@ const bokningSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(FetchBokning.pending, state => {
       state.loading = true;
-    });
+    })
     builder.addCase(FetchBokning.fulfilled, (state, action: PayloadAction<LoadedBokning[]>) => {
       state.loading = false;
       state.bokningar = action.payload;
-      state.error = '';
-    });
-    builder.addCase(FetchBokning.rejected, (state, action: PayloadAction<any>) => {
+    })
+    builder.addCase(FetchBokning.rejected, (state) => {
       state.loading = false;
       state.bokningar = [];
-      state.error = action.payload;
-    });
-  },
-});
+    })
+  }
+})
 
 export default bokningSlice.reducer;

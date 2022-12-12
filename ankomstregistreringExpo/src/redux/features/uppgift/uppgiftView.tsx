@@ -6,7 +6,7 @@ import {
   Alert,
   TouchableOpacity,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 
 import React, { useState, useEffect } from "react";
@@ -18,8 +18,9 @@ import { selectPatPNr } from "../loggaIn/userAuthSlice";
 import { LoadedUppgift } from "../../../models/LoadedUppgift";
 import Uppgift from "../../../models/Uppgift";
 
+let loadedData: LoadedUppgift[] = [];
+
 export default function UppgifterView() {
-  let loadedData: LoadedUppgift[] = [];
   const dispatch = useDispatch<AppDispatch>();
   const uppgift = useSelector((state: any) => state.uppgift);
   const patPNr = useSelector(selectPatPNr);
@@ -28,9 +29,10 @@ export default function UppgifterView() {
   const [cValueData, setcValueData] = useState("");
   const [getDsc, setDsc] = useState("");
   const [newText, setText] = useState("");
-  const [getId, setId] = useState(0);
+  const [getId, setId] = useState("");
+  const [emailValidError, setEmailValidError] = useState("");
 
-  const ShowDialog = (id: number, value: string, dsc: string) => {
+  const ShowDialog = (id: string, value: string, dsc: string) => {
     setcValueData(value);
     setId(id);
     setDsc(dsc);
@@ -41,43 +43,71 @@ export default function UppgifterView() {
     setVisible(false);
   };
 
-  async function HandleEdit(newcValue: string) {
-    const jsonData = {
-      request: {
-        iPatPNrP: patPNr,
-        iEcoPNrP: 1,
-        cModeP: "SET",
-        AnkTt: {
-          "Ank-tt": [
-            {
-              Id: getId,
-              Dsc: getDsc,
-              cValue: newcValue,
-              dValue: 0,
-              lValue: false,
-              ReadOnly: false,
-              SaveResult: "",
-            },
-          ],
-        },
-      },
-    };
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(jsonData),
-    };
+  const handleValidEmail = (val: string) => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
-    const response = await fetch(
-      "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/GetPatPParam",
-      requestOptions
-    );
-    const myArray = await response.json();
-    var x = myArray.response.AnkTt;
-    const { "Ank-tt": myData } = x;
-    dispatch(FetchUppgift(patPNr));
-    setVisible(false);
-    return myData;
+    if (val.length === 0) {
+      setEmailValidError("E-postadress måste anges");
+    } else if (reg.test(val) === false) {
+      setEmailValidError("Ange giltig e-postadress");
+      return "invalid";
+    } else if (reg.test(val) === true) {
+      return "valid";
+    }
+    return "";
+  };
+
+  async function HandleEdit(newcValue: string) {
+    let value = "";
+    if (getId == "Email") {
+      let returnVal: string = handleValidEmail(newcValue);
+      value = returnVal;
+    }
+
+    if(value == "invalid"){
+      Alert.alert(emailValidError);
+    }
+
+    if (value == "valid") {
+      const jsonData = {
+        request: {
+          iPatPNrP: patPNr,
+          iEcoPNrP: 1,
+          cModeP: "SET",
+          AnkTt: {
+            "Ank-tt": [
+              {
+                Id: getId,
+                Dsc: getDsc,
+                cValue: newcValue,
+                dValue: 0,
+                lValue: false,
+                ReadOnly: false,
+                SaveResult: "",
+              }
+            ]
+          }
+        }
+      }
+
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonData),
+      };
+
+      const response = await fetch(
+        "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/GetPatPParam",
+        requestOptions
+      );
+
+      const myArray = await response.json();
+      var x = myArray.response.AnkTt;
+      const { "Ank-tt": myData } = x;
+      dispatch(FetchUppgift(patPNr));
+      setVisible(false);
+      return myData;
+    }
   }
 
   useEffect(() => {
@@ -120,7 +150,6 @@ export default function UppgifterView() {
 
   return (
     <View style={styles.view}>
-      {/*
       <Dialog.Container visible={visible}>
         <Dialog.Title>Ändra</Dialog.Title>
         <Dialog.Input onChangeText={(newText) => setText(newText)}>
@@ -129,14 +158,13 @@ export default function UppgifterView() {
         <Dialog.Button label="Ändra" onPress={() => HandleEdit(newText)} />
         <Dialog.Button label="Stäng" onPress={() => HandleCancel()} />
       </Dialog.Container>
-  */}
-
 
       <Text style={styles.Title}>Kontrollera dina Uppgifter</Text>
 
-      {uppgift.loading &&
-      (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      {uppgift.loading && (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size="large"></ActivityIndicator>
         </View>
       )}
@@ -153,19 +181,19 @@ export default function UppgifterView() {
 const styles = StyleSheet.create({
   Bold1: {
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 15
   },
 
   Title: {
     fontWeight: "bold",
     fontSize: 30,
-    marginBottom: 30,
+    marginBottom: 30
   },
 
   Bold: {
     fontWeight: "bold",
     fontSize: 15,
-    color: "black",
+    color: "black"
   },
 
   button: {
@@ -174,17 +202,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     width: 220,
-    margin: 10,
+    margin: 10
   },
 
   flex1: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
 
   flex2: {
-    flexDirection: "row",
+    flexDirection: "row"
   },
 
   item: {
@@ -192,30 +220,30 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
-    width: 500,
+    width: 500
   },
 
   view: {
     flex: 1,
-    backgroundColor: "aliceblue",
+    //backgroundColor: "aliceblue",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
   container: {
     height: 70,
-    width: 70,
+    width: 70
   },
 
   Img: {
     height: 30,
-    width: 30,
+    width: 30
   },
 
   gridView: {
     margin: 20,
     marginTop: 10,
-    flexDirection: "row",
+    flexDirection: "row"
   },
 
   itemContainer: {
@@ -224,11 +252,11 @@ const styles = StyleSheet.create({
     padding: 40,
     height: 150,
     width: 158,
-    margin: 5,
+    margin: 5
   },
 
   font: {
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 15
   },
 });

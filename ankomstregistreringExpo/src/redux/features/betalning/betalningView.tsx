@@ -5,47 +5,48 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 
 import React, { useState, useEffect } from "react";
 import BetalPost from "../../../models/BetalPost";
 import Services from "../../../services/Services";
 import { FetchBetalning } from "./betalningSlice";
-import {AppDispatch} from '../../store';
+import { AppDispatch } from "../../store";
 import { selectPatPNr } from "../loggaIn/userAuthSlice";
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import { selectsessionNrCode } from "../loggaIn/userAuthSlice";
 import { LoadedBetalPost } from "../../../models/LoadedBetalPost";
 
-
 let loadedData: LoadedBetalPost[] = [];
 
-export default function BetalningView() 
-{
-    var APIServices = new Services();
-    const dispatch = useDispatch<AppDispatch>();
-    const betalning = useSelector((state: any) => state.betalning);
-    const [data, SetMyData] = useState<BetalPost[]>([]);
-    const patPNr = useSelector(selectPatPNr);
-    const sessionNrCode = useSelector(selectsessionNrCode);
-    loadedData = betalning.betalningar;
-    const betalposts: BetalPost[] = [];
+export default function BetalningView() {
+  const APIServices = new Services();
+  const dispatch = useDispatch<AppDispatch>();
+  const betalning = useSelector((state: any) => state.betalning);
+  const [data, SetMyData] = useState<BetalPost[]>([]);
+  const patPNr = useSelector(selectPatPNr);
+  const sessionNrCode = useSelector(selectsessionNrCode);
+  loadedData = betalning.betalningar;
+  const betalposts: BetalPost[] = [];
 
-    async function LoadedBetalPostToBetalPost() 
+  async function LoadedBetalPostToBetalPost() {
+    for (let i = 0; i < loadedData.length; i++) 
     {
-      for (let i = 0; i < loadedData.length; i++) 
-      {
-        const newBetalpost = {} as BetalPost;
-        newBetalpost.name = await APIServices.FetchFindFirstEcoP(loadedData[i].EcoPNr);        
-        newBetalpost.sum = loadedData[i].SumJob;
-        betalposts.push(newBetalpost);
-      }
-     SetMyData(betalposts);
+      const newBetalpost = {} as BetalPost;
+      newBetalpost.name = await APIServices.FetchFindFirstEcoP(
+        loadedData[i].EcoPNr
+      );
+      newBetalpost.sum = loadedData[i].SumJob;
+      betalposts.push(newBetalpost);
     }
+    SetMyData(betalposts);
+  }
 
   useEffect(() => {
-  dispatch(FetchBetalning({patPNr,sessionNrCode})).finally(() => LoadedBetalPostToBetalPost());
+    dispatch(FetchBetalning({patPNr, sessionNrCode })).finally(() =>
+      LoadedBetalPostToBetalPost()
+    );
   }, []);
 
   const CreateAlert = () =>
@@ -55,12 +56,10 @@ export default function BetalningView()
         onPress: () => console.log("Kort Pressed"),
         style: "cancel",
       },
-      { text: "Swish", onPress: () => console.log("Swish Pressed") }
+      { text: "Swish", onPress: () => console.log("Swish Pressed") },
     ]);
 
-
-  function Swish() 
-  {
+  function Swish() {
     //http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rct/SwishCl?cTxtRefP=""&cTxtRefP=""&cTxtMsgP=""&iPatPNrP=153&iEcoPNrP=1&deSumP=10
     //Verifiera telefonnummer? Finns redan i uppdatera uppgifter
     //Postlås (carita.TabLock2Pay)
@@ -71,10 +70,10 @@ export default function BetalningView()
     //Hämta och skriv ut kvitto
   }
 
-  const RenderItem = ({item}: {item: BetalPost}) => {
+  const RenderItem = ({ item }: { item: BetalPost }) => {
     return (
       <View>
-        <View style={styles.item}>
+        {item.sum > 0 && (<View style={styles.item}>
           <View style={styles.flex1}>
             <View>
               <Text>{item.name}</Text>
@@ -95,22 +94,23 @@ export default function BetalningView()
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </View>)}      
       </View>
     );
-  };
+  }
 
   return (
     <View style={styles.view}>
       <Text style={styles.Title}>Att betala</Text>
 
-      {betalning.loading &&
-      (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      {betalning.loading && (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size="large"></ActivityIndicator>
         </View>
       )}
-     
+
       <FlatList
         data={data}
         renderItem={RenderItem}
@@ -124,20 +124,19 @@ const styles = StyleSheet.create({
   Bold1: {
     fontWeight: "bold",
     fontSize: 15,
-    color: "white",
-
+    color: "white"
   },
 
   Title: {
     fontWeight: "bold",
     fontSize: 30,
-    marginBottom: 30,
+    marginBottom: 30
   },
 
   Bold: {
     fontWeight: "bold",
     fontSize: 15,
-    color: "black",
+    color: "black"
   },
 
   button: {
@@ -146,17 +145,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     width: 220,
-    margin: 10,
+    margin: 10
   },
 
   flex1: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
 
   flex2: {
-    flexDirection: "row",
+    flexDirection: "row"
   },
 
   item: {
@@ -164,30 +163,30 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
-    width: 500,
+    width: 500
   },
 
   view: {
     flex: 1,
     backgroundColor: "aliceblue",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
   container: {
     height: 70,
-    width: 70,
+    width: 70
   },
 
   Img: {
     height: 30,
-    width: 30,
+    width: 30
   },
 
   gridView: {
     margin: 20,
     marginTop: 10,
-    flexDirection: "row",
+    flexDirection: "row"
   },
 
   itemContainer: {
@@ -196,11 +195,11 @@ const styles = StyleSheet.create({
     padding: 40,
     height: 150,
     width: 158,
-    margin: 5,
+    margin: 5
   },
 
   font: {
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 15
   }
 });

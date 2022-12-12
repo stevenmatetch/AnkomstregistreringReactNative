@@ -34,7 +34,7 @@ const authSlice = createSlice({
             state.autoRegister = false;
         }
     }
-});
+})
 
 export const { setSignIn, setSignOut } = authSlice.actions;
 export const selectAutoRegister = (state:any) => state.userAuth.autoRegister;

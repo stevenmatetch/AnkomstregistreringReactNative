@@ -9,11 +9,9 @@ import { useDispatch } from "react-redux";
 import { setSignIn } from "./userAuthSlice";
 
 export default function LoggaInView() {
-  //const user = useSelector(selectUserName);
-  //testa med en annan patient
   let Username = "";
   let PatPNr = 0;
-  var APIServices = new Services();
+  const APIServices = new Services();
   const settings = {} as Settings;
   const vardenheter: EcoP[] = [];
   const [currentLoginMethod, setLoginMethod] = useState(0);
@@ -23,10 +21,12 @@ export default function LoggaInView() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  function getEcoPList(theseEcoP: EcoP[]) {
+  function getEcoPList(theseEcoP: EcoP[]) 
+  {
     let retVal = "";
     for (let i = 0; i < theseEcoP.length; i++) {
-      if (retVal != "") {
+      if (retVal != "") 
+      {
         retVal += "%01";
       }
       retVal += theseEcoP[i].EcoPNr.toString();
@@ -35,9 +35,9 @@ export default function LoggaInView() {
   }
 
   const GetSettings = async () => {
-    var data = await APIServices.GetSettings();
-    let Typ = data.response.cLoginTypP;
-    var result = data.response.EcoPTt;
+    const data = await APIServices.GetSettings();
+    const Typ:string = data.response.cLoginTypP;
+    const result = data.response.EcoPTt;
     const { "EcoP-tt": myData } = result;
    //sdasd
     if (data.response.iArrPNrP > 0) {
@@ -48,7 +48,8 @@ export default function LoggaInView() {
       settings.UseFpReader = data.response.lUseFingerP;
       settings.cLoginTypP = data.response.cLoginTypP;
 
-      switch (Typ) {
+      switch (Typ) 
+      {
         case "PNR":
           settings.LoginMethod = 2;
           break;
@@ -66,7 +67,6 @@ export default function LoggaInView() {
       setLoginMethod(settings.LoginMethod);
       setSecretPNRMethod(settings.SecretPNR);
       setAutoRegisterMethod(settings.AutoRegister);
- 
     }
 
     for (let i = 0; i < myData.length; i++) {
@@ -76,7 +76,7 @@ export default function LoggaInView() {
       newEcoP.Dsc = myData[i].Dsc;
       vardenheter.push(newEcoP);
     }
-  };
+  }
 
   async function LoggInClicked(txtPersonNr: string, txtPIN: string) {
     //CheckPIN
@@ -168,8 +168,8 @@ export default function LoggaInView() {
     if (currentLoginMethod == 2) {
       if (txtPersonNr !== "") {
         let lAvailableP = await SetPatient(txtPersonNr);
-
-        if (lAvailableP == true) {
+        if (lAvailableP == true) 
+        {
           let sessionNr: number = await APIServices.GetSessionNrCode();
           const user = {
             isLoggedIn: true,
@@ -183,8 +183,10 @@ export default function LoggaInView() {
           dispatch(setSignIn(user));
         }
       }
-    } else {
-      if (txtPersonNr !== "" && txtPIN !== "") {
+    } 
+    else {
+      if(txtPersonNr !== "" && txtPIN !== "") 
+      {
         let lAvailableP = await LoggInClicked(txtPersonNr, txtPIN);
         if (lAvailableP == true) {
           let sessionNr: number = await APIServices.GetSessionNrCode();
@@ -207,7 +209,8 @@ export default function LoggaInView() {
   }, []);
 
   if (currentLoginMethod == 2) {
-    if(secretPNR == false){
+    if(secretPNR == false)
+    {
       return (
         <View style={styles.container}>
           <View>
@@ -292,8 +295,7 @@ export default function LoggaInView() {
           </View>
         </View>
       );
-    }
-    
+    }   
   }
 }
 
@@ -304,5 +306,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "aliceblue",
-  },
+  }
 });
