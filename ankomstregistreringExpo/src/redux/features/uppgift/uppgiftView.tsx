@@ -23,14 +23,18 @@ let loadedData: LoadedUppgift[] = [];
 export default function UppgifterView() {
   const dispatch = useDispatch<AppDispatch>();
   const uppgift = useSelector((state: any) => state.uppgift);
-  const patPNr = useSelector(selectPatPNr);
   loadedData = uppgift.uppgifter;
+  const patPNr = useSelector(selectPatPNr);
   const [visible, setVisible] = useState(false);
   const [cValueData, setcValueData] = useState("");
   const [getDsc, setDsc] = useState("");
   const [newText, setText] = useState("");
   const [getId, setId] = useState("");
   const [emailValidError, setEmailValidError] = useState("");
+
+  useEffect(() => {
+    dispatch(FetchUppgift(patPNr));
+  }, []);
 
   const ShowDialog = (id: string, value: string, dsc: string) => {
     setcValueData(value);
@@ -110,9 +114,6 @@ export default function UppgifterView() {
     }
   }
 
-  useEffect(() => {
-    dispatch(FetchUppgift(patPNr));
-  }, []);
 
   function Swish() {
     //http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rct/SwishCl?cTxtRefP=""&cTxtRefP=""&cTxtMsgP=""&iPatPNrP=153&iEcoPNrP=1&deSumP=10
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
 
   view: {
     flex: 1,
-    //backgroundColor: "aliceblue",
+    backgroundColor: "aliceblue",
     alignItems: "center",
     justifyContent: "center"
   },
@@ -258,5 +259,5 @@ const styles = StyleSheet.create({
   font: {
     fontWeight: "bold",
     fontSize: 15
-  },
+  }
 });

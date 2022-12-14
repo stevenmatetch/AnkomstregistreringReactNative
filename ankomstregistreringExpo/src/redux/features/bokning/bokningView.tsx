@@ -106,7 +106,8 @@ export const BokningView = () => {
           loadedData[i].TimeEnd
         );
          
-        console.log();
+       let HalvBookingTime =  GetHalvBookingTime(fromMin, startTid)
+        if(fromMin > HalvBookingTime)
         //sen
         if(startTid < fromMin)
         {  
@@ -161,8 +162,11 @@ export const BokningView = () => {
     SetMyData(bokningar);
   }
 
-  function GetHalvBookingTime(){
+  function GetHalvBookingTime(endTime:Date, startTime:Date){
 
+    var diff = (endTime.getTime() - startTime.getTime()) / 1000;
+    diff /= 60;
+    return Math.abs(Math.round(diff));
   }
   
   function GetDatTimeStartDate(value: number, min: number) {
@@ -174,7 +178,7 @@ export const BokningView = () => {
   function GetDatTimeStart(value: number, min: number) {
     let date: Date = new Date(value);
     date.setMinutes(min);
-    var newFormat = moment(date).format("llll");
+    let newFormat = moment(date).format("llll");
     let dateString = newFormat.split(" ");
     let myArray: string[] = [
       dateString[0],
@@ -189,7 +193,7 @@ export const BokningView = () => {
   function GetDatTimeEnd(value: number, min: number) {
     let date: Date = new Date(value);
     date.setMinutes(min);
-    var newFormat = moment(date).format("llll");
+    let newFormat = moment(date).format("llll");
     let dateString = newFormat.split(" ");
     let time = dateString[4];
     return time;

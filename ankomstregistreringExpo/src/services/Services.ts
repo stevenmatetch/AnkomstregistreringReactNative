@@ -13,7 +13,7 @@ export default class Services
 
   async GetAdminPassword() 
   {
-    const resp = await fetch(`http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/gen/FindFirst?cTableP=AppYA&cWhereStrP=AppYId ="AnkPassword"&cDataStrP=PrmChr`);
+    const resp = await fetch(baseURL +`rest/AnkRegAPI/gen/FindFirst?cTableP=AppYA&cWhereStrP=AppYId ="AnkPassword"&cDataStrP=PrmChr`);
     const data = await resp.json();
     const password = data.response.cDataStrP;
     return password;
@@ -35,7 +35,7 @@ export default class Services
  
   async FetchFindFirstEcoP(EcoPNr:number) 
   {
-    const respFindFirstEcoP = await fetch("http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/gen/FindFirst?cTableP=EcoP&cWhereStrP=EcoPNr=" +EcoPNr+"&cDataStrP=Dsc");
+    const respFindFirstEcoP = await fetch(baseURL +`rest/AnkRegAPI/gen/FindFirst?cTableP=EcoP&cWhereStrP=EcoPNr=${EcoPNr}&cDataStrP=Dsc`);
     const dataFindFirstEcoP = await respFindFirstEcoP.json();
     return dataFindFirstEcoP.response.cDataStrP;
   }

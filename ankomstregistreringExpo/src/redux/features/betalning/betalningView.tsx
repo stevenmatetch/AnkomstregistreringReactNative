@@ -3,7 +3,6 @@ import {
   Text,
   View,
   FlatList,
-  Alert,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
@@ -30,18 +29,6 @@ export default function BetalningView() {
   loadedData = betalning.betalningar;
   const betalposts: BetalPost[] = [];
 
-  async function LoadedBetalPostToBetalPost() {
-    for (let i = 0; i < loadedData.length; i++) 
-    {
-      const newBetalpost = {} as BetalPost;
-      newBetalpost.name = await APIServices.FetchFindFirstEcoP(
-        loadedData[i].EcoPNr
-      );
-      newBetalpost.sum = loadedData[i].SumJob;
-      betalposts.push(newBetalpost);
-    }
-    SetMyData(betalposts);
-  }
 
   useEffect(() => {
     dispatch(FetchBetalning({patPNr, sessionNrCode })).finally(() =>
@@ -49,7 +36,20 @@ export default function BetalningView() {
     );
   }, []);
 
-  const CreateAlert = () =>
+  async function LoadedBetalPostToBetalPost() 
+  {
+    for (let i = 0; i < loadedData.length; i++) 
+    {
+      const newBetalpost = {} as BetalPost;
+      newBetalpost.name = await APIServices.FetchFindFirstEcoP(loadedData[i].EcoPNr);
+      newBetalpost.sum = loadedData[i].SumJob;
+      betalposts.push(newBetalpost);
+    }
+    SetMyData(betalposts);
+  }
+
+
+ /* const CreateAlert = () =>
     Alert.alert("Betala med", "My Alert Msg", [
       {
         text: "Kort",
@@ -59,7 +59,8 @@ export default function BetalningView() {
       { text: "Swish", onPress: () => console.log("Swish Pressed") },
     ]);
 
-  function Swish() {
+*/  
+function Swish() {
     //http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rct/SwishCl?cTxtRefP=""&cTxtRefP=""&cTxtMsgP=""&iPatPNrP=153&iEcoPNrP=1&deSumP=10
     //Verifiera telefonnummer? Finns redan i uppdatera uppgifter
     //Postlås (carita.TabLock2Pay)

@@ -222,7 +222,7 @@ export default function LoggaInView() {
             />
             <CustomButton
               text="Logga in"
-              onPress={() => LoginHandle(username, password)}
+              onPress={() => LoginHandle(username, "")}
             />
           </View>
         </View>
@@ -240,7 +240,7 @@ export default function LoggaInView() {
             />
             <CustomButton
               text="Logga in"
-              onPress={() => LoginHandle(username, password)}
+              onPress={() => LoginHandle(username, "")}
             />
           </View>
         </View>
