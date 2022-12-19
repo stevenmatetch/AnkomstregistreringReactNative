@@ -19,7 +19,8 @@ import { LoadedBetalPost } from "../../../models/LoadedBetalPost";
 
 let loadedData: LoadedBetalPost[] = [];
 
-export default function BetalningView() {
+export default function BetalningView() 
+{
   const APIServices = new Services();
   const dispatch = useDispatch<AppDispatch>();
   const betalning = useSelector((state: any) => state.betalning);
@@ -29,9 +30,8 @@ export default function BetalningView() {
   loadedData = betalning.betalningar;
   const betalposts: BetalPost[] = [];
 
-
   useEffect(() => {
-    dispatch(FetchBetalning({patPNr, sessionNrCode })).finally(() =>
+    dispatch(FetchBetalning({patPNr, sessionNrCode})).finally(() =>
       LoadedBetalPostToBetalPost()
     );
   }, []);
@@ -60,7 +60,8 @@ export default function BetalningView() {
     ]);
 
 */  
-function Swish() {
+function Swish() 
+{
     //http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rct/SwishCl?cTxtRefP=""&cTxtRefP=""&cTxtMsgP=""&iPatPNrP=153&iEcoPNrP=1&deSumP=10
     //Verifiera telefonnummer? Finns redan i uppdatera uppgifter
     //Postlås (carita.TabLock2Pay)

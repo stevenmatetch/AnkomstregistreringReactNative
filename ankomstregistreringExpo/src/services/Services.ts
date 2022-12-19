@@ -13,7 +13,7 @@ export default class Services
 
   async GetAdminPassword() 
   {
-    const resp = await fetch(baseURL +`rest/AnkRegAPI/gen/FindFirst?cTableP=AppYA&cWhereStrP=AppYId ="AnkPassword"&cDataStrP=PrmChr`);
+    const resp = await fetch(baseURL +`gen/FindFirst?cTableP=AppYA&cWhereStrP=AppYId ="AnkPassword"&cDataStrP=PrmChr`);
     const data = await resp.json();
     const password = data.response.cDataStrP;
     return password;
@@ -21,8 +21,9 @@ export default class Services
   
   async GetSettings() 
   {
-    let deviceName = Device.deviceName;
-    const resp = await fetch(baseURL + `arr/GetArrP?cComputerIdP=${deviceName}`);
+    //const deviceName = Device.deviceName;
+    const name = "Lenovo Tab M10 FHD Plus"
+    const resp = await fetch(baseURL + `arr/GetArrP?cComputerIdP=${name}`);
     const data = await resp.json();
     return data;  
   }
@@ -35,9 +36,9 @@ export default class Services
  
   async FetchFindFirstEcoP(EcoPNr:number) 
   {
-    const respFindFirstEcoP = await fetch(baseURL +`rest/AnkRegAPI/gen/FindFirst?cTableP=EcoP&cWhereStrP=EcoPNr=${EcoPNr}&cDataStrP=Dsc`);
-    const dataFindFirstEcoP = await respFindFirstEcoP.json();
-    return dataFindFirstEcoP.response.cDataStrP;
+    const resp = await fetch(baseURL +`gen/FindFirst?cTableP=EcoP&cWhereStrP=EcoPNr=${EcoPNr}&cDataStrP=Dsc`);
+    const data = await resp.json();
+    return data.response.cDataStrP;
   }
   
 }

@@ -48,7 +48,7 @@ export default function UppgifterView() {
   };
 
   const handleValidEmail = (val: string) => {
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
     if (val.length === 0) {
       setEmailValidError("E-postadress måste anges");
@@ -105,8 +105,8 @@ export default function UppgifterView() {
         requestOptions
       );
 
-      const myArray = await response.json();
-      var x = myArray.response.AnkTt;
+      const data = await response.json();
+      const x = data.response.AnkTt;
       const { "Ank-tt": myData } = x;
       dispatch(FetchUppgift(patPNr));
       setVisible(false);

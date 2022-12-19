@@ -21,12 +21,10 @@ export default function LoggaInView() {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  function getEcoPList(theseEcoP: EcoP[]) 
-  {
+  function getEcoPList(theseEcoP: EcoP[]) {
     let retVal = "";
     for (let i = 0; i < theseEcoP.length; i++) {
-      if (retVal != "") 
-      {
+      if (retVal != "") {
         retVal += "%01";
       }
       retVal += theseEcoP[i].EcoPNr.toString();
@@ -36,10 +34,10 @@ export default function LoggaInView() {
 
   const GetSettings = async () => {
     const data = await APIServices.GetSettings();
-    const Typ:string = data.response.cLoginTypP;
+    const Typ: string = data.response.cLoginTypP;
     const result = data.response.EcoPTt;
     const { "EcoP-tt": myData } = result;
-   //sdasd
+    //sdasd
     if (data.response.iArrPNrP > 0) {
       settings.ArrPNr = data.response.iArrPNrP;
       settings.AutoRegister = data.response.lAutoRegP;
@@ -48,8 +46,7 @@ export default function LoggaInView() {
       settings.UseFpReader = data.response.lUseFingerP;
       settings.cLoginTypP = data.response.cLoginTypP;
 
-      switch (Typ) 
-      {
+      switch (Typ) {
         case "PNR":
           settings.LoginMethod = 2;
           break;
@@ -64,7 +61,8 @@ export default function LoggaInView() {
           break;
       }
 
-      setLoginMethod(settings.LoginMethod);
+      // setLoginMethod(settings.LoginMethod);
+      setLoginMethod(2);
       setSecretPNRMethod(settings.SecretPNR);
       setAutoRegisterMethod(settings.AutoRegister);
     }
@@ -76,7 +74,8 @@ export default function LoggaInView() {
       newEcoP.Dsc = myData[i].Dsc;
       vardenheter.push(newEcoP);
     }
-  }
+    console.log(myData);
+  };
 
   async function LoggInClicked(txtPersonNr: string, txtPIN: string) {
     //CheckPIN
@@ -124,8 +123,7 @@ export default function LoggaInView() {
     if (pNr.length == 10 || pNr.length == 11) pNr = "19" + pNr;
     if (pNr.length == 12) pNr = pNr.substring(0, 8) + "-" + pNr.substring(8);
     if (pNr.length == 13) {
-
-      pNr = pNr.substring(2);   
+      pNr = pNr.substring(2);
       pNr = pNr.replace("-", "");
       /*
       if (settings.UseMinusPNR !== true) 
@@ -134,7 +132,7 @@ export default function LoggaInView() {
         pNr = pNr.replace("-", "");
       }
       */
-
+      console.log(pNr);
       //Findfirst???
       const url = `http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/gen/FindFirst?cTableP=PatP&cWhereStrP=PatPId="${pNr}" AND Century=19&cDataStrP=Dsc%01PatPNr%01EcoPN`;
       const resp = await fetch(url);
@@ -168,26 +166,6 @@ export default function LoggaInView() {
     if (currentLoginMethod == 2) {
       if (txtPersonNr !== "") {
         let lAvailableP = await SetPatient(txtPersonNr);
-        if (lAvailableP == true) 
-        {
-          let sessionNr: number = await APIServices.GetSessionNrCode();
-          const user = {
-            isLoggedIn: true,
-            userName: Username,
-            admin: false,
-            patPNr: PatPNr,
-            sessionNrCode: sessionNr,
-            autoRegister: AutoRegister,
-          }
-          console.log("aaa",AutoRegister)
-          dispatch(setSignIn(user));
-        }
-      }
-    } 
-    else {
-      if(txtPersonNr !== "" && txtPIN !== "") 
-      {
-        let lAvailableP = await LoggInClicked(txtPersonNr, txtPIN);
         if (lAvailableP == true) {
           let sessionNr: number = await APIServices.GetSessionNrCode();
           const user = {
@@ -197,7 +175,26 @@ export default function LoggaInView() {
             patPNr: PatPNr,
             sessionNrCode: sessionNr,
             autoRegister: AutoRegister,
-          }
+          };
+          console.log("aaa", AutoRegister);
+          dispatch(setSignIn(user));
+        }
+      }
+    } else {
+      if (txtPersonNr !== "" && txtPIN !== "") {
+        console.log(1);
+        let lAvailableP = await LoggInClicked(txtPersonNr, txtPIN);
+
+        if (lAvailableP == true) {
+          let sessionNr: number = await APIServices.GetSessionNrCode();
+          const user = {
+            isLoggedIn: true,
+            userName: Username,
+            admin: false,
+            patPNr: PatPNr,
+            sessionNrCode: sessionNr,
+            autoRegister: AutoRegister,
+          };
           dispatch(setSignIn(user));
         }
       }
@@ -209,8 +206,7 @@ export default function LoggaInView() {
   }, []);
 
   if (currentLoginMethod == 2) {
-    if(secretPNR == false)
-    {
+    if (secretPNR == false) {
       return (
         <View style={styles.container}>
           <View>
@@ -227,8 +223,7 @@ export default function LoggaInView() {
           </View>
         </View>
       );
-    }
-    else{
+    } else {
       return (
         <View style={styles.container}>
           <View>
@@ -246,9 +241,8 @@ export default function LoggaInView() {
         </View>
       );
     }
-  
   } else {
-    if(secretPNR == false){
+    if (secretPNR == false) {
       return (
         <View style={styles.container}>
           <View>
@@ -271,8 +265,7 @@ export default function LoggaInView() {
           </View>
         </View>
       );
-    }
-    else{
+    } else {
       return (
         <View style={styles.container}>
           <View>
@@ -295,7 +288,7 @@ export default function LoggaInView() {
           </View>
         </View>
       );
-    }   
+    }
   }
 }
 
@@ -306,5 +299,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "aliceblue",
-  }
+  },
 });

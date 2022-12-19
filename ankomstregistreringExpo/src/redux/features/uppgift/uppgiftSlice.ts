@@ -35,8 +35,8 @@ export const FetchUppgift = createAsyncThunk('',async (patPNr: number) => {
     }
 
     const response = await fetch('http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/sch/GetPatPParam', requestOptions);
-    const myArray = await response.json();
-    var x = myArray.response.AnkTt;
+    const data = await response.json();
+    const x = data.response.AnkTt;
     const { "Ank-tt": myData } = x; 
     return myData;
 })
