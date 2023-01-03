@@ -1,18 +1,18 @@
 import { StyleSheet, Text, View,TouchableOpacity} from "react-native";
 import { useDispatch } from "react-redux";
-import { setSignOut } from "../loggaIn/userAuthSlice";
+import { setSignOut } from "../loggaIn/UserAuthSlice";
 import * as Device from "expo-device";
 
 export default function AdminView() 
 {
   const dispatch = useDispatch();
-  let DeviceName = Device.deviceName;
+  const deviceName = Device.deviceName;
   
   return (
     <View style={styles.view}>
       <View style={styles.view} >
         <View >
-        <Text>Klinikens namn är: {DeviceName}</Text>
+        <Text>Klinikens namn är: {deviceName}</Text>
         </View>
         <View>
           <TouchableOpacity style={styles.button}>

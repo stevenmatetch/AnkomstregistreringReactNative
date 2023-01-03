@@ -40,5 +40,12 @@ export default class Services
     const data = await resp.json();
     return data.response.cDataStrP;
   }
+
+  async GetTimeoutTime() 
+  {
+    const resp = await fetch(baseURL +`gen/FindFirst?cTableP=AppYA&cWhereStrP=AppYId ="AnkTimeout"&cDataStrP=PrmDec`);
+    const data = await resp.json();
+    return data.response.cDataStrP;
+  }
   
 }

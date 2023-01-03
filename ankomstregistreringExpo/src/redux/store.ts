@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import bokningReducer from './features/bokning/bokningSlice'
-import userAuthReducer from './features/loggaIn/userAuthSlice'
-import betalningReducer from './features/betalning/betalningSlice'
-import uppgiftReducer from './features/uppgift/uppgiftSlice'
+import bokningReducer from './features/bokning/BokningSlice'
+import userAuthReducer from './features/loggaIn/UserAuthSlice'
+import betalningReducer from './features/betalning/BetalningSlice'
+import uppgiftReducer from './features/uppgift/UppgiftSlice'
 
 export const store = configureStore({
   reducer: {

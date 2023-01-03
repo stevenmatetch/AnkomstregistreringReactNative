@@ -11,4 +11,5 @@ export default interface Bokning {
   SchSNr: number;
   TimeStart: number;
   TimeEnd: string;
+  toLateMoreThanHalfBookingTime:boolean;
 }

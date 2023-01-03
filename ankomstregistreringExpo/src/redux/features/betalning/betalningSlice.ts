@@ -1,5 +1,5 @@
-import { DataStateBetalPost } from './../../../models/DatastateBetalPost';
-import { LoadedBetalPost } from './../../../models/LoadedBetalPost';
+import { DataStateBetalPost } from '../../../models/DatastateBetalPost';
+import { LoadedBetalPost } from '../../../models/LoadedBetalPost';
 import {createSlice, createAsyncThunk,PayloadAction} from '@reduxjs/toolkit';
 
 const initialState:DataStateBetalPost = {
@@ -12,7 +12,7 @@ const baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
 export const FetchBetalning = createAsyncThunk("",async ({ patPNr, sessionNrCode }:{ patPNr: number, sessionNrCode: number }) => {
   const resp = await fetch(baseURL +`pat/PatPayNewExternal?lInitP=true&iPatPNrP=${patPNr}&iEcoPNrP=0&deRecivedP=0&cTxtCepaP=${""}&iSessionNrP=${sessionNrCode}`);
   const data = await resp.json();
-  var result = data.response.InfoTt;
+  const result = data.response.InfoTt;
   const { "Info-tt": myData } = result;
   return myData;
 })

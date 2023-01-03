@@ -3,10 +3,10 @@ import { StyleSheet, View, Alert } from "react-native";
 import Settings from "../../../models/Settings";
 import EcoP from "../../../models/EcoP";
 import Services from "../../../services/Services";
-import CustomButton from "../../../CustomButton/CustomButton";
-import CustomInput from "../../../CustomInput/CustomInput";
+import CustomButton from "../../../customButton/CustomButton";
+import CustomInput from "../../../customInput/CustomInput";
 import { useDispatch } from "react-redux";
-import { setSignIn } from "./userAuthSlice";
+import { setSignIn } from "./UserAuthSlice";
 
 export default function LoggaInView() {
   let Username = "";
@@ -118,8 +118,6 @@ export default function LoggaInView() {
   }
 
   async function SetPatient(pNr: string) {
-    //testa
-
     if (pNr.length == 10 || pNr.length == 11) pNr = "19" + pNr;
     if (pNr.length == 12) pNr = pNr.substring(0, 8) + "-" + pNr.substring(8);
     if (pNr.length == 13) {
@@ -136,7 +134,7 @@ export default function LoggaInView() {
       //Findfirst???
       const url = `http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/gen/FindFirst?cTableP=PatP&cWhereStrP=PatPId="${pNr}" AND Century=19&cDataStrP=Dsc%01PatPNr%01EcoPN`;
       const resp = await fetch(url);
-      let data = await resp.json();
+      const data = await resp.json();
 
       if (data.response.lAvailableP == true) {
         let result = data.response.cDataStrP;
@@ -163,11 +161,13 @@ export default function LoggaInView() {
   }
 
   async function LoginHandle(txtPersonNr: string, txtPIN: string) {
-    if (currentLoginMethod == 2) {
-      if (txtPersonNr !== "") {
-        let lAvailableP = await SetPatient(txtPersonNr);
+    if (currentLoginMethod == 2) 
+    {
+      if (txtPersonNr !== "") 
+      {
+        const lAvailableP:boolean = await SetPatient(txtPersonNr);
         if (lAvailableP == true) {
-          let sessionNr: number = await APIServices.GetSessionNrCode();
+          const sessionNr: number = await APIServices.GetSessionNrCode();
           const user = {
             isLoggedIn: true,
             userName: Username,
@@ -180,13 +180,14 @@ export default function LoggaInView() {
           dispatch(setSignIn(user));
         }
       }
-    } else {
-      if (txtPersonNr !== "" && txtPIN !== "") {
-        console.log(1);
-        let lAvailableP = await LoggInClicked(txtPersonNr, txtPIN);
-
-        if (lAvailableP == true) {
-          let sessionNr: number = await APIServices.GetSessionNrCode();
+    } 
+    else {
+      if (txtPersonNr !== "" && txtPIN !== "") 
+      {
+        const lAvailableP:boolean = await LoggInClicked(txtPersonNr, txtPIN);
+        if (lAvailableP == true) 
+        {
+          const sessionNr: number = await APIServices.GetSessionNrCode();
           const user = {
             isLoggedIn: true,
             userName: Username,

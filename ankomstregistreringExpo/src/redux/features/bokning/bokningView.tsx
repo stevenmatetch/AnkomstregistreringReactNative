@@ -13,24 +13,27 @@ import {
 
 import moment from "moment";
 import "moment/locale/sv";
-import { selectAutoRegister } from "../loggaIn/userAuthSlice";
+import { selectAutoRegister } from "../loggaIn/UserAuthSlice";
 import Bokning from "../../../models/Bokning";
-import { selectPatPNr } from "../loggaIn/userAuthSlice";
+import { selectPatPNr } from "../loggaIn/UserAuthSlice";
 import Services from "../../../services/Services";
 import { useSelector, useDispatch } from "react-redux";
-import { FetchBokning } from "./bokningSlice";
-import { AppDispatch } from "../../store";
-import { selectUserName } from "../loggaIn/userAuthSlice";
+import { FetchBokning } from "./BokningSlice";
+import { AppDispatch } from "../../Store";
+import { selectUserName } from "../loggaIn/UserAuthSlice";
 import LoadedBokning from "../../../models/LoadedBokning";
 
 let loadedData: LoadedBokning[] = [];
 let HalfBookingTime: number = 0;
+let BookingStartDateTime: Date = new Date();
+
 export const BokningView = () => {
   const settings_AutoRegister = useSelector(selectAutoRegister);
   let baseURL = "http://scssrv6.scs.lan:7710/CaritaAnkRegAPI/rest/AnkRegAPI/";
   const patPNr = useSelector(selectPatPNr);
   const Username = useSelector(selectUserName);
   const [data, SetMyData] = useState<Bokning[]>([]);
+  const [toLateMoreThanHalfBookingTime, SetoLateMoreThanHalfBookingTime] = useState<boolean>(false);
 
   //obj (slice)
   const bokning = useSelector((state: any) => state.bokning);
@@ -38,14 +41,14 @@ export const BokningView = () => {
   const APIServices = new Services();
   const bokningar: Bokning[] = [];
   loadedData = bokning.bokningar;
-
+  
   useEffect(() => {
     dispatch(FetchBokning(patPNr)).finally(() => LoadedBokningToBokning());
   }, []);
 
   async function Arrive(iSchSNrP: number) {
     console.log(1);
-    let resp = await fetch(baseURL + `sch/Arrive?iSchSNrP=${iSchSNrP}`);
+    const resp = await fetch(baseURL + `sch/Arrive?iSchSNrP=${iSchSNrP}`);
     const data = await resp.json();
     console.log(2);
     if (data.response.cResultP !== "") {
@@ -59,20 +62,22 @@ export const BokningView = () => {
   }
 
   async function LoadedBokningToBokning() {
+
     if (loadedData.length > 0) {
-      let from: Date = new Date();
-      let fromMin = moment(from).subtract(10, "minutes").toDate();
+      const from: Date = new Date();
+      const fromMin = moment(from).subtract(10, "minutes").toDate();
       let latetxt = "";
       let toolate = false;
-      let datTmeNow: Date = new Date();
+      const dateTimeNow: Date = new Date();
       let datTimeEnd: string = "";
-
-      let BookingStartDateTime: Date = new Date();
+      let toLateMoreThanHalfBookingTime:Boolean = false;
+      console.log(loadedData);
+   
       console.log("hhhh", HalfBookingTime);
-      let halfDateTimeNow = moment(BookingStartDateTime)
+      const newBookingTime = moment(BookingStartDateTime)
         .add(HalfBookingTime, "minutes")
         .toDate();
-      console.log("19.20", halfDateTimeNow);
+      console.log("21.20", newBookingTime);
 
       for (let i = 0; i < loadedData.length; i++) {
         const newBokning = {} as Bokning;
@@ -82,8 +87,10 @@ export const BokningView = () => {
           loadedData[i].DatSch,
           loadedData[i].TimeStart
         );
+
         console.log(startTid);
         BookingStartDateTime = startTid;
+        console.log("startTime:",BookingStartDateTime);// 21:00
 
         if (startTid < fromMin) {
           newBokning.ToLate = true;
@@ -124,22 +131,25 @@ export const BokningView = () => {
           loadedData[i].TimeEnd
         );
         HalfBookingTime = halfBookingTime;
-        console.log(halfBookingTime);
+        console.log("A",dateTimeNow);
+        console.log("b",newBookingTime);
 
-        if (datTmeNow > halfDateTimeNow) {
+        if (dateTimeNow > newBookingTime) {
+          SetoLateMoreThanHalfBookingTime(true);
+          console.log("jaaaaaaaaaaaaaaaaaaaaa!")
+          newBokning.toLateMoreThanHalfBookingTime = true;
           // mer än halva bokningstiden
         }
         /* if(fromMin > HalvBookingTime)*/
         //sen
-        if (startTid < fromMin) {
+       /* if (startTid < fromMin) {
           bokningar.push(newBokning);
         }
+        */
 
         // i tid
         if (startTid > fromMin) {
           bokningar.push(newBokning);
-          if (startTid < fromMin) {
-          }
         }
 
         console.log("asdsssssssssss", settings_AutoRegister);
@@ -179,36 +189,36 @@ export const BokningView = () => {
     TimeStart: number,
     TimeEnd: number
   ) {
-    let dateStart: Date = new Date(DatSch);
+    const dateStart: Date = new Date(DatSch);
     dateStart.setMinutes(TimeStart);
 
-    let dateEnd: Date = new Date(DatSch);
+    const dateEnd: Date = new Date(DatSch);
     dateEnd.setMinutes(TimeEnd);
 
     let diff = (dateEnd.getTime() - dateStart.getTime()) / 1000;
     diff /= 60;
-    let halfDiff = diff / 2;
+    const halfDiff = diff / 2;
     return Math.abs(Math.round(halfDiff));
   }
 
   function GetDatTimeStartDate(value: number, min: number) {
-    let date: Date = new Date(value);
+    const date: Date = new Date(value);
     date.setMinutes(min);
     return date;
   }
 
   function GetDatTimeStartString(value: number, min: number) {
-    let date: Date = new Date(value);
+    const date: Date = new Date(value);
     date.setMinutes(min);
-    let newFormat = moment(date).format("llll");
-    let dateString = newFormat.split(" ");
-    let myArray: string[] = [
+    const newFormat = moment(date).format("llll");
+    const dateString = newFormat.split(" ");
+    const myArray: string[] = [
       dateString[0],
       dateString[1],
       dateString[2],
       dateString[4],
     ];
-    let myArrayJoin = myArray.join(" ");
+    const myArrayJoin = myArray.join(" ");
     return myArrayJoin;
   }
 
@@ -222,16 +232,16 @@ export const BokningView = () => {
   }
 
   function GetDatTimeEndString(value: number, min: number) {
-    let date: Date = new Date(value);
+    const date: Date = new Date(value);
     date.setMinutes(min);
-    let newFormat = moment(date).format("llll");
-    let dateString = newFormat.split(" ");
-    let time = dateString[4];
+    const newFormat = moment(date).format("llll");
+    const dateString = newFormat.split(" ");
+    const time = dateString[4];
     return time;
   }
 
   const RenderItem = ({ item }: { item: Bokning }) => {
-    if (item.Stat >= 20 && item.Stat < 40) {
+    if (item.Stat >= 20 && item.Stat < 40) {  
       if (!item.ImageFile) {
         return (
           <View style={styles.item}>
@@ -245,7 +255,7 @@ export const BokningView = () => {
                 </Text>
               </View>
             </View>
-            <Text></Text>
+            <Text></Text>       
             <Text>Ansvarig: {item.EmpPDsc}</Text>
             <Text>Plats: {item.SchPDsc} </Text>
             <Text>{item.Welcome}</Text>
@@ -278,7 +288,8 @@ export const BokningView = () => {
           </View>
         );
       }
-    } else {
+    } else 
+    {
       if (!item.ImageFile) {
         return (
           <View style={styles.item}>
@@ -341,6 +352,7 @@ export const BokningView = () => {
         );
       }
     }
+  
   };
 
   return (

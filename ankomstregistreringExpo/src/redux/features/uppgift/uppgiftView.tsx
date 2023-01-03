@@ -11,10 +11,10 @@ import {
 
 import React, { useState, useEffect } from "react";
 import Dialog from "react-native-dialog";
-import { FetchUppgift } from "./uppgiftSlice";
-import { AppDispatch } from "../../store";
+import { FetchUppgift } from "./UppgiftSlice";
+import { AppDispatch } from "../../Store";
 import { useSelector, useDispatch } from "react-redux";
-import { selectPatPNr } from "../loggaIn/userAuthSlice";
+import { selectPatPNr } from "../loggaIn/UserAuthSlice";
 import { LoadedUppgift } from "../../../models/LoadedUppgift";
 import Uppgift from "../../../models/Uppgift";
 
@@ -25,35 +25,35 @@ export default function UppgifterView() {
   const uppgift = useSelector((state: any) => state.uppgift);
   loadedData = uppgift.uppgifter;
   const patPNr = useSelector(selectPatPNr);
-  const [visible, setVisible] = useState(false);
-  const [cValueData, setcValueData] = useState("");
-  const [getDsc, setDsc] = useState("");
-  const [newText, setText] = useState("");
-  const [getId, setId] = useState("");
-  const [emailValidError, setEmailValidError] = useState("");
+  const [visible, SetVisible] = useState(false);
+  const [cValueData, SetcValueData] = useState("");
+  const [getDsc, SetDsc] = useState("");
+  const [newText, SetText] = useState("");
+  const [getId, SetId] = useState("");
+  const [emailValidError, SetEmailValidError] = useState("");
 
   useEffect(() => {
     dispatch(FetchUppgift(patPNr));
   }, []);
 
   const ShowDialog = (id: string, value: string, dsc: string) => {
-    setcValueData(value);
-    setId(id);
-    setDsc(dsc);
-    setVisible(true);
+    SetcValueData(value);
+    SetId(id);
+    SetDsc(dsc);
+    SetVisible(true);
   };
 
   const HandleCancel = () => {
-    setVisible(false);
+    SetVisible(false);
   };
 
-  const handleValidEmail = (val: string) => {
+  const HandleValidEmail = (val: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
     if (val.length === 0) {
-      setEmailValidError("E-postadress måste anges");
+      SetEmailValidError("E-postadress måste anges");
     } else if (reg.test(val) === false) {
-      setEmailValidError("Ange giltig e-postadress");
+      SetEmailValidError("Ange giltig e-postadress");
       return "invalid";
     } else if (reg.test(val) === true) {
       return "valid";
@@ -64,7 +64,7 @@ export default function UppgifterView() {
   async function HandleEdit(newcValue: string) {
     let value = "";
     if (getId == "Email") {
-      let returnVal: string = handleValidEmail(newcValue);
+      let returnVal: string = HandleValidEmail(newcValue);
       value = returnVal;
     }
 
@@ -109,7 +109,7 @@ export default function UppgifterView() {
       const x = data.response.AnkTt;
       const { "Ank-tt": myData } = x;
       dispatch(FetchUppgift(patPNr));
-      setVisible(false);
+      SetVisible(false);
       return myData;
     }
   }
@@ -153,13 +153,12 @@ export default function UppgifterView() {
     <View style={styles.view}>
       <Dialog.Container visible={visible}>
         <Dialog.Title>Ändra</Dialog.Title>
-        <Dialog.Input onChangeText={(newText) => setText(newText)}>
+        <Dialog.Input onChangeText={(newText) => SetText(newText)}>
           {cValueData}
         </Dialog.Input>
         <Dialog.Button label="Ändra" onPress={() => HandleEdit(newText)} />
         <Dialog.Button label="Stäng" onPress={() => HandleCancel()} />
       </Dialog.Container>
-
       <Text style={styles.Title}>Kontrollera dina Uppgifter</Text>
 
       {uppgift.loading && (

@@ -10,11 +10,11 @@ import {
 import React, { useState, useEffect } from "react";
 import BetalPost from "../../../models/BetalPost";
 import Services from "../../../services/Services";
-import { FetchBetalning } from "./betalningSlice";
-import { AppDispatch } from "../../store";
-import { selectPatPNr } from "../loggaIn/userAuthSlice";
+import { FetchBetalning } from "./BetalningSlice";
+import { AppDispatch } from "../../Store";
+import { selectPatPNr } from "../loggaIn/UserAuthSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { selectsessionNrCode } from "../loggaIn/userAuthSlice";
+import { selectsessionNrCode } from "../loggaIn/UserAuthSlice";
 import { LoadedBetalPost } from "../../../models/LoadedBetalPost";
 
 let loadedData: LoadedBetalPost[] = [];

@@ -2,17 +2,17 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useSelector } from "react-redux";
-import { selectIsLoggedIn } from "../redux/features/loggaIn/userAuthSlice";
-import LoggaInView from "../redux/features/loggaIn/loggaInView";
-import UppgiftView from "../redux/features/uppgift/uppgiftView";
+import { selectIsLoggedIn } from "../redux/features/loggaIn/UserAuthSlice";
+import LoggaInView from "../redux/features/loggaIn/LoggaInView";
+import UppgiftView from "../redux/features/uppgift/UppgiftView";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
-import { selectAdmin } from "../redux/features/loggaIn/userAuthSlice";
+import { selectAdmin } from "../redux/features/loggaIn/UserAuthSlice";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { setSignOut } from "../redux/features/loggaIn/userAuthSlice";
-import { BokningView } from "../redux/features/bokning/bokningView";
-import BetalningView from "../redux/features/betalning/betalningView";
-import AdminView from "../redux/features/admin/adminView";
+import { setSignOut } from "../redux/features/loggaIn/UserAuthSlice";
+import { BokningView } from "../redux/features/bokning/BokningView";
+import BetalningView from "../redux/features/betalning/BetalningView";
+import AdminView from "../redux/features/admin/AdminView";
 
 const Stack = createStackNavigator();
 
@@ -73,9 +73,11 @@ const AppRoute = () => {
 
   return (
     <NavigationContainer>
+ 
       <View style={styles.view}>
         {isLoggedIn == true && isAdmin == false && <HandleNavigation />}
       </View>
+      
       {isLoggedIn ? (
         isAdmin == true ? (
           <AdminView />

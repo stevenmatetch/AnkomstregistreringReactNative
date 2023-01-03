@@ -1,4 +1,3 @@
-
 export default interface EcoP {
     EcoPId: number;
     EcoPNr: number;
